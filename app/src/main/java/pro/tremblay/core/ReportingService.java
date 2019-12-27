@@ -46,15 +46,10 @@ public class ReportingService {
         BigDecimal initialCashValue = working.getCash();
         BigDecimal currentCashValue = current.getCash();
 
-        BigDecimal initialSecPosValue = null;
-        try {
-            initialSecPosValue = working.getSecurityPositions()
+        BigDecimal initialSecPosValue = working.getSecurityPositions()
                 .stream()
                 .map(securityPosition -> PriceService.getPrice(beginningOfYear, securityPosition.getSecurity()))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        } catch(NullPointerException e) {
-            working.getSecurityPositions().forEach(System.out::println);
-        }
         BigDecimal currentSecPosValue = current.getSecurityPositions()
                 .stream()
                 .map(securityPosition -> PriceService.getPrice(now, securityPosition.getSecurity()))

@@ -1,6 +1,13 @@
+## Usage
+
+* Reporting (spotbugs and jacoco): `mvn verify site`
+* Mutation testing: `mvn package org.pitest:pitest-maven:mutationCoverage -DwithHistory`
+
 ## Benchmark
 
-### Baseline
+To run: `mvn package -DskipTests && java -jar app/target/benchmarks.jar`
+
+### Baseline (before any refactoring)
 
 ```
 Benchmark                             Mode  Cnt   Score   Error   Units
