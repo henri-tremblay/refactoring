@@ -63,20 +63,21 @@ public class ReportingService {
 
         BigDecimal initialSecPosValue = working.getSecurityPositions()
                 .stream()
-                .map(securityPosition -> PriceService.getPrice(beginningOfYear, securityPosition.getSecurity()))
+                .map(securityPosition -> securityPosition.getQuantity().multiply(PriceService.getPrice(beginningOfYear, securityPosition.getSecurity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         BigDecimal currentSecPosValue = current.getSecurityPositions()
                 .stream()
-                .map(securityPosition -> PriceService.getPrice(now, securityPosition.getSecurity()))
+                .map(securityPosition -> securityPosition.getQuantity().multiply(PriceService.getPrice(now, securityPosition.getSecurity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        BigDecimal initialValue = BigDecimalUtil.add(initialCashValue, initialSecPosValue);
+        BigDecimal initialValue = initialCashValue.add(initialSecPosValue);
+
         BigDecimal roi;
         if(initialValue.signum() == 0) {
             roi = BigDecimal.ZERO.setScale(10, RoundingMode.UNNECESSARY);
         }
         else {
-            roi = (BigDecimalUtil.add(currentCashValue.subtract(initialCashValue), currentSecPosValue.subtract(initialSecPosValue)))
+            roi = currentCashValue.add(currentSecPosValue).subtract(initialValue)
                     .divide(initialValue, 10, RoundingMode.HALF_UP)
                     .multiply(BigDecimal.valueOf(100L));
         }
@@ -91,20 +92,7 @@ public class ReportingService {
     private void revert(Position current, Transaction transaction) {
         switch (transaction.getType()) {
             case BUY: {
-                current.cash(current.getCash().subtract(transaction.getCash()));
-                SecurityPosition pos = current.getSecurityPositions().stream()
-                        .filter(sec -> sec.getSecurity().equals(transaction.getSecurity()))
-                        .findAny()
-                        .orElse(null);
-                if (pos == null) {
-                    pos = new SecurityPosition().quantity(BigDecimal.ZERO).security(transaction.getSecurity());
-                    current.getSecurityPositions().add(pos);
-                }
-                pos.quantity(BigDecimalUtil.add(pos.getQuantity(), transaction.getQuantity()));
-                break;
-            }
-            case SELL:
-                current.cash(BigDecimalUtil.add(current.getCash(), transaction.getCash()));
+                current.cash(current.getCash().add(transaction.getCash()));
                 SecurityPosition pos = current.getSecurityPositions().stream()
                         .filter(sec -> sec.getSecurity().equals(transaction.getSecurity()))
                         .findAny()
@@ -115,11 +103,24 @@ public class ReportingService {
                 }
                 pos.quantity(pos.getQuantity().subtract(transaction.getQuantity()));
                 break;
+            }
+            case SELL:
+                current.cash(current.getCash().subtract(transaction.getCash()));
+                SecurityPosition pos = current.getSecurityPositions().stream()
+                        .filter(sec -> sec.getSecurity().equals(transaction.getSecurity()))
+                        .findAny()
+                        .orElse(null);
+                if (pos == null) {
+                    pos = new SecurityPosition().quantity(BigDecimal.ZERO).security(transaction.getSecurity());
+                    current.getSecurityPositions().add(pos);
+                }
+                pos.quantity(pos.getQuantity().add(transaction.getQuantity()));
+                break;
             case DEPOSIT:
                 current.cash(current.getCash().subtract(transaction.getCash()));
                 break;
             case WITHDRAWAL:
-                current.cash(BigDecimalUtil.add(current.getCash(), transaction.getCash()));
+                current.cash(current.getCash().add(transaction.getCash()));
                 break;
         }
     }

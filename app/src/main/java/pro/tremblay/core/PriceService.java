@@ -53,7 +53,5 @@ public class PriceService {
         return price;
     }
 
-    public static BigDecimal getRealTimePrice(Security security) {
-        return BigDecimal.valueOf(random.nextInt(100));
-    }
+    private PriceService() {}
 }

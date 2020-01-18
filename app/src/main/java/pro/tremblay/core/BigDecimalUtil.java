@@ -15,12 +15,21 @@
  */
 package pro.tremblay.core;
 
+import javax.annotation.Nonnull;
+import javax.annotation.concurrent.ThreadSafe;
 import java.math.BigDecimal;
 
+@ThreadSafe
 public final class BigDecimalUtil {
 
-    public static BigDecimal add(BigDecimal b1, BigDecimal b2) {
-        return b1.add(b2);
+    @Nonnull
+    public static BigDecimal bd(@Nonnull String value) {
+        return new BigDecimal(value);
+    }
+
+    @Nonnull
+    public static BigDecimal bd(int value) {
+        return BigDecimal.valueOf(value);
     }
 
     private BigDecimalUtil() {}
