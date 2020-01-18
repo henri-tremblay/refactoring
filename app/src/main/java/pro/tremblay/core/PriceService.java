@@ -48,7 +48,7 @@ public class PriceService {
     public static BigDecimal getPrice(LocalDate date, Security security) {
         BigDecimal price = prices.get(getKey(security, date));
         if(price == null) {
-            System.out.println("No price for " + security + " on " + date);
+            throw new IllegalArgumentException("No price for " + security + " on " + date);
         }
         return price;
     }
