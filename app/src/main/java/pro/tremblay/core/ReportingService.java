@@ -15,6 +15,8 @@
  */
 package pro.tremblay.core;
 
+import javax.annotation.Nonnull;
+import javax.annotation.concurrent.ThreadSafe;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -23,9 +25,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@ThreadSafe
 public class ReportingService {
 
-    public BigDecimal calculateReturnOnInvestmentYTD(Position current, Collection<Transaction> transactions) {
+    @Nonnull
+    public BigDecimal calculateReturnOnInvestmentYTD(@Nonnull Position current, @Nonnull Collection<Transaction> transactions) {
         LocalDate now = LocalDate.now();
         LocalDate beginningOfYear = now.withDayOfYear(1);
 

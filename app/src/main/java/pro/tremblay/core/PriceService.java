@@ -15,6 +15,8 @@
  */
 package pro.tremblay.core;
 
+import javax.annotation.Nonnull;
+import javax.annotation.concurrent.ThreadSafe;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -22,6 +24,7 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+@ThreadSafe
 public class PriceService {
 
     private static final ConcurrentMap<String, BigDecimal> prices = new ConcurrentHashMap<>();
@@ -45,7 +48,8 @@ public class PriceService {
         return date + "#" + security;
     }
 
-    public static BigDecimal getPrice(LocalDate date, Security security) {
+    @Nonnull
+    public static BigDecimal getPrice(@Nonnull LocalDate date, @Nonnull Security security) {
         BigDecimal price = prices.get(getKey(security, date));
         if(price == null) {
             throw new IllegalArgumentException("No price for " + security + " on " + date);

@@ -15,9 +15,11 @@
  */
 package pro.tremblay.core;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+@ThreadSafe
 public class Preferences {
 
     private static final Preferences INSTANCE = new Preferences();
