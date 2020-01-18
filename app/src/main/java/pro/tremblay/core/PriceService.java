@@ -48,6 +48,15 @@ public class PriceService {
         return date + "#" + security;
     }
 
+    /**
+     * Returns the price at a given date for a security. The implementation generates random prices to
+     * simulate a real price source. During your refactoring, please keep the current price generation concept.
+     *
+     * @param date date on which we want the price
+     * @param security security for which we want a price
+     * @throws IllegalArgumentException if no price is found at this date
+     * @return the price of the security at a given date
+     */
     @Nonnull
     public static BigDecimal getPrice(@Nonnull LocalDate date, @Nonnull Security security) {
         BigDecimal price = prices.get(getKey(security, date));

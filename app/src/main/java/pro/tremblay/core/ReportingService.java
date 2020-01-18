@@ -28,6 +28,23 @@ import java.util.stream.Collectors;
 @ThreadSafe
 public class ReportingService {
 
+    /**
+     * Calculate the annualized return on investment since the beginning of the year (Year To Date). We use the simplest method
+     * possible. We have the following
+     * <ul>
+     *     <li>Current value: {@code cash + security_quantity * current_security_price} based on the current position</li>
+     *     <li>Initial value: {@code cash + security_quantity * start_of_year_security_price} based on the start of year position</li>
+     *     <li>Absolute ROI: {@code (current_value - initial_value) / initial_value * 100}</li>
+     *     <li>Year length: As set in the preferences</li>
+     *     <li>Annualized ROI : {@code absolute_roi * year_length / days_since_beginning_of_year} </li>
+     * </ul>
+     *
+     * Then formula is {@code (current_value - initial_value) / initial_value}.
+     *
+     * @param current the current position of today, won't be modified by this call
+     * @param transactions all transactions on this position, they are not sorted and might be before the beginning of the year
+     * @return annualized return on investment since beginning of the year
+     */
     @Nonnull
     public BigDecimal calculateReturnOnInvestmentYTD(@Nonnull Position current, @Nonnull Collection<Transaction> transactions) {
         LocalDate now = LocalDate.now();
