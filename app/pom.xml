@@ -28,16 +28,16 @@
 
     <artifactId>refactoring</artifactId>
 
-    <properties>
-        <jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
-        <spotbugs-maven-plugin.version>3.1.12.2</spotbugs-maven-plugin.version>
-    </properties>
-
     <dependencies>
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.2</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13-rc-2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -48,11 +48,6 @@
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.stefanbirkner</groupId>
-            <artifactId>system-rules</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -82,7 +77,6 @@
             <plugin>
                 <groupId>org.pitest</groupId>
                 <artifactId>pitest-maven</artifactId>
-                <version>1.4.10</version>
             </plugin>
 
             <plugin>
