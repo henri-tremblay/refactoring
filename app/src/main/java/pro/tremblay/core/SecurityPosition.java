@@ -17,6 +17,9 @@ package pro.tremblay.core;
 
 import java.math.BigDecimal;
 
+/**
+ * Quantity possessed of a given security.
+ */
 public class SecurityPosition {
 
     private Security security;

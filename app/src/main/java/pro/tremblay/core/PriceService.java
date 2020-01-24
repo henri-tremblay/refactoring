@@ -24,6 +24,9 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+/**
+ * Service returning security prices. This is actually a fake implementation using randomly generated prices.
+ */
 @ThreadSafe
 public class PriceService {
 
@@ -32,6 +35,7 @@ public class PriceService {
     private static final Random random = new Random();
 
     static {
+        // Randomly generated price since the beginning of the year
         LocalDate now = LocalDate.now();
         for (Security security : Security.values()) {
             LocalDate start = now.withDayOfYear(1);

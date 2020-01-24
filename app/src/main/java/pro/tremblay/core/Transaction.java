@@ -18,12 +18,20 @@ package pro.tremblay.core;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * A transaction that happened on a position.
+ */
 public class Transaction {
 
+    /** Type of transaction **/
     private TransactionType type;
+    /** Date at which the transaction occured */
     private LocalDate date;
+    /** Amount of cash exchanged during the transaction. The amount is always positive, the side of the transaction is determined by its type */
     private BigDecimal cash;
+    /** Securities bought or sold if securities are involved in the transaction */
     private Security security;
+    /** Quantity of securities exchanged during the transaction. The quantity is always positive, the side of the transaction is determined by its type */
     private BigDecimal quantity;
 
     public TransactionType getType() {

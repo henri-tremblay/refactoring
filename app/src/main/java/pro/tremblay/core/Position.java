@@ -18,6 +18,10 @@ package pro.tremblay.core;
 import java.math.BigDecimal;
 import java.util.Collection;
 
+/**
+ * All positions (cash and security) of a user. There is only one cash position since we are trading in only one
+ * currency.
+ */
 public class Position {
 
     private BigDecimal cash;

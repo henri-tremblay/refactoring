@@ -15,6 +15,10 @@
  */
 package pro.tremblay.core;
 
+/**
+ * Enumeration listing useful available security. In real-life it would be a full-fledged java object but to keep
+ * things simple, it's just an enum.
+ */
 public enum Security {
     APPL,
     GOOGL,

@@ -19,6 +19,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
 import java.math.BigDecimal;
 
+/**
+ * Helper class to make it easier to create a {@code BigDecimal}.
+ */
 @ThreadSafe
 public final class BigDecimalUtil {
 

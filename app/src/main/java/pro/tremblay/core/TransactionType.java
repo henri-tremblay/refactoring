@@ -15,25 +15,32 @@
  */
 package pro.tremblay.core;
 
+/**
+ * Type of transactions.
+ */
 public enum TransactionType {
+    /** Securities were bought using cash */
     BUY {
         @Override
         public boolean hasQuantity() {
             return true;
         }
     },
+    /** Securities were sold to get cash */
     SELL {
         @Override
         public boolean hasQuantity() {
             return true;
         }
     },
+    /** Cash was added to the position */
     DEPOSIT {
         @Override
         public boolean hasQuantity() {
             return false;
         }
     },
+    /** Cash was removed from the position */
     WITHDRAWAL {
         @Override
         public boolean hasQuantity() {
@@ -41,5 +48,10 @@ public enum TransactionType {
         }
     };
 
+    /**
+     * Tells if this type of transactions involve a security movement.
+     *
+     * @return if some security quantity was exchanged
+     */
     public abstract boolean hasQuantity();
 }
