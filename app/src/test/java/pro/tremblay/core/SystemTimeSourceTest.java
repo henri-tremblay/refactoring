@@ -15,16 +15,19 @@
  */
 package pro.tremblay.core;
 
-import javax.annotation.concurrent.ThreadSafe;
+import org.junit.jupiter.api.Test;
 
-/**
- * Enumeration listing useful available security. In real-life it would be a full-fledged java object but to keep
- * things simple, it's just an enum.
- */
-@ThreadSafe
-public enum Security {
-    APPL,
-    GOOGL,
-    IBM,
-    INTC
+import java.time.LocalDate;
+
+import static org.assertj.core.api.Assertions.*;
+
+public class SystemTimeSourceTest {
+
+    private SystemTimeSource timeSource = new SystemTimeSource();
+
+    @Test
+    public void today() {
+        assertThat(timeSource.today()).isEqualTo(LocalDate.now());
+    }
+
 }

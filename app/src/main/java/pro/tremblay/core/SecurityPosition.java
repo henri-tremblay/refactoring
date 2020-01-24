@@ -15,6 +15,7 @@
  */
 package pro.tremblay.core;
 
+import javax.annotation.Nonnull;
 import javax.annotation.concurrent.NotThreadSafe;
 import java.math.BigDecimal;
 
@@ -24,25 +25,26 @@ import java.math.BigDecimal;
 @NotThreadSafe
 public class SecurityPosition {
 
-    private Security security;
-    private BigDecimal quantity;
+    private final Security security;
+    private final BigDecimal quantity;
 
+    public static SecurityPosition securityPosition(Security security, BigDecimal quantity) {
+        return new SecurityPosition(security, quantity);
+    }
+
+    public SecurityPosition(Security security, BigDecimal quantity) {
+        this.security = security;
+        this.quantity = quantity;
+    }
+
+    @Nonnull
     public Security getSecurity() {
         return security;
     }
 
-    public SecurityPosition security(Security security) {
-        this.security = security;
-        return this;
-    }
-
+    @Nonnull
     public BigDecimal getQuantity() {
         return quantity;
-    }
-
-    public SecurityPosition quantity(BigDecimal quantity) {
-        this.quantity = quantity;
-        return this;
     }
 
     @Override
@@ -51,5 +53,9 @@ public class SecurityPosition {
             "security=" + security +
             ", quantity=" + quantity +
             '}';
+    }
+
+    public boolean isFlat() {
+        return quantity.signum() == 0;
     }
 }

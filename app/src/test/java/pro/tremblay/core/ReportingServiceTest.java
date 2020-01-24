@@ -15,28 +15,45 @@
  */
 package pro.tremblay.core;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetSystemProperty;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.mock;
+import static org.easymock.EasyMock.replay;
 import static pro.tremblay.core.BigDecimalUtil.bd;
+import static pro.tremblay.core.Position.position;
+import static pro.tremblay.core.Transaction.transaction;
 
-@SetSystemProperty(key="LENGTH_OF_YEAR", value="360")
 public class ReportingServiceTest {
 
-    private ReportingService reportingService = new ReportingService();
+    private Preferences preferences = mock(Preferences.class);
+    private StrangeTimeSource timeSource = new StrangeTimeSource();
+    private PriceService priceService = mock(PriceService.class);
 
-    private final Position current = new Position()
-            .cash(BigDecimal.ZERO)
-            .securityPositions(new ArrayList<>());
+    private ReportingService reportingService = new ReportingService(preferences, timeSource, priceService);
+
+    private final Position current = position()
+            .cash(BigDecimal.ZERO);
+
+    private final LocalDate today = LocalDate.ofYearDay(2019, 200);
+    private final LocalDate hundredDaysAgo = today.minusDays(100);
+
+    @BeforeEach
+    public void setup() {
+        expect(preferences.getInteger(ReportingService.LENGTH_OF_YEAR)).andStubReturn(360);
+        replay(preferences);
+
+        timeSource.today(today);
+    }
 
     @Test
     public void calculateReturnOnInvestmentYTD_noTransactionAndPosition() {
@@ -49,50 +66,41 @@ public class ReportingServiceTest {
         current.cash(bd(200));
 
         Collection<Transaction> transactions = Collections.singleton(
-                new Transaction()
+                transaction()
                         .cash(bd(100))
                         .type(TransactionType.DEPOSIT)
-                        .date(LocalDate.now().minusDays(10)));
+                        .date(hundredDaysAgo));
 
         BigDecimal roi = reportingService.calculateReturnOnInvestmentYTD(current, transactions);
-
-        // Current cash value = 200$, Current security value = 0$
-        // Initial cash value = 100$, Initial cash value = 0$
-        // Year length = 360
-        BigDecimal actual = BigDecimal.valueOf((200.0 - 100.0) / 100.0 * 100.0 * 360.0 / LocalDate.now().getDayOfYear())
-            .setScale(2, RoundingMode.HALF_UP);
-        assertThat(roi).isEqualTo(actual);
+        assertThat(roi).isEqualTo("180.00"); // (200$ - 100$) / 100$ * 100% * 360 days / 200 days
     }
 
     @Test
     public void calculateReturnOnInvestmentYTD_secBought() {
-        current.getSecurityPositions().add(new SecurityPosition()
-            .security(Security.GOOGL)
-            .quantity(bd(50)));
+        current.addSecurityPosition(Security.GOOGL, bd(50));
 
-        BigDecimal priceAtTransaction = PriceService.getPrice(LocalDate.now().minusDays(10), Security.GOOGL);
+        Collection<Transaction> transactions = Collections.singleton(
+            transaction()
+                .security(Security.GOOGL)
+                .quantity(bd(50))
+                .cash(bd(100))
+                .type(TransactionType.BUY)
+                .date(hundredDaysAgo));
 
-        Transaction transaction = new Transaction()
-            .security(Security.GOOGL)
-            .quantity(bd(50))
-            .cash(priceAtTransaction.multiply(bd(50)))
-            .type(TransactionType.BUY)
-            .date(LocalDate.now().minusDays(10));
-        Collection<Transaction> transactions = Collections.singleton(transaction);
+        expect(priceService.getPrice(today, Security.GOOGL)).andStubReturn(bd(2));
+        replay(priceService);
 
         BigDecimal roi = reportingService.calculateReturnOnInvestmentYTD(current, transactions);
 
-        BigDecimal priceNow = PriceService.getPrice(LocalDate.now(), Security.GOOGL);
+        // Cash value now: 0, Sec value now: 50 x 2 = 100, Total: 100
+        // Cash value initial: 100, Sec value now: 0, Total: 100
+        // (100$ - 100$) / 100$ * 100% * 360 days / 200 days
+        assertThat(roi).isEqualTo("0.00");
+    }
 
-        BigDecimal initialCashValue = transaction.getCash(); // initialSecValue = 0
-        BigDecimal currentSecValue = priceNow.multiply(bd(50)); // currentCashValue = 0
-
-        BigDecimal actual = currentSecValue.subtract(initialCashValue)
-            .divide(initialCashValue, 10, RoundingMode.HALF_UP)
-            .multiply(bd(100))
-            .multiply(bd(360))
-            .divide(bd(LocalDate.now().getDayOfYear()), 2, RoundingMode.HALF_UP);
-        assertThat(roi).isEqualTo(actual);
+    @Test
+    public void testTwoArgsConstructor() {
+        new ReportingService(new Preferences(), new StrangeTimeSource().today(LocalDate.now()));
     }
 
     @Test
@@ -103,20 +111,19 @@ public class ReportingServiceTest {
             new Transaction()
                 .cash(bd(100))
                 .type(TransactionType.DEPOSIT)
-                .date(LocalDate.now().minusDays(10)),
+                .date(hundredDaysAgo),
             new Transaction()
                 .cash(bd(50))
                 .type(TransactionType.DEPOSIT)
-                .date(LocalDate.now().minusDays(9)));
+                .date(hundredDaysAgo.minusDays(1)));
 
         BigDecimal roi = reportingService.calculateReturnOnInvestmentYTD(current, transactions);
 
         // Current cash value = 200$, Current security value = 0$
         // Initial cash value = 50$, Initial cash value = 0$
         // Year length = 360
-        BigDecimal actual = BigDecimal.valueOf((200.0 - 50.0) / 50.0 * 100.0 * 360.0 / LocalDate.now().getDayOfYear())
-            .setScale(2, RoundingMode.HALF_UP);
-        assertThat(roi).isEqualTo(actual);
+        // (200$ - 50$) / 50$ * 100% * 360 days / 200 days
+        assertThat(roi).isEqualTo("540.00");
     }
 
     @Test
@@ -127,19 +134,18 @@ public class ReportingServiceTest {
             new Transaction()
                 .cash(bd(100))
                 .type(TransactionType.DEPOSIT)
-                .date(LocalDate.now().minusDays(10)),
+                .date(hundredDaysAgo),
             new Transaction()
                 .cash(bd(50))
                 .type(TransactionType.DEPOSIT)
-                .date(LocalDate.now().minusDays(10)));
+                .date(hundredDaysAgo));
 
         BigDecimal roi = reportingService.calculateReturnOnInvestmentYTD(current, transactions);
 
         // Current cash value = 200$, Current security value = 0$
         // Initial cash value = 50$, Initial cash value = 0$
         // Year length = 360
-        BigDecimal actual = BigDecimal.valueOf((200.0 - 50.0) / 50.0 * 100.0 * 360.0 / LocalDate.now().getDayOfYear())
-            .setScale(2, RoundingMode.HALF_UP);
-        assertThat(roi).isEqualTo(actual);
+        // (200$ - 50$) / 50$ * 100% * 360 days / 200 days
+        assertThat(roi).isEqualTo("540.00");
     }
 }

@@ -26,9 +26,11 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
 import pro.tremblay.core.Position;
+import pro.tremblay.core.Preferences;
 import pro.tremblay.core.ReportingService;
 import pro.tremblay.core.Security;
 import pro.tremblay.core.SecurityPosition;
+import pro.tremblay.core.SystemTimeSource;
 import pro.tremblay.core.Transaction;
 import pro.tremblay.core.TransactionType;
 
@@ -40,6 +42,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static pro.tremblay.core.SecurityPosition.securityPosition;
+
 @BenchmarkMode(Mode.Throughput)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Warmup(iterations = 10, time = 1)
@@ -48,27 +52,24 @@ import java.util.stream.Stream;
 @State(Scope.Benchmark)
 public class ReportingServiceBenchmark {
 
-    static {
-        System.setProperty("LENGTH_OF_YEAR", "365");
-    }
-
-    private ReportingService service = new ReportingService();
+    private Preferences preferences = new Preferences();
+    private ReportingService service = new ReportingService(preferences, new SystemTimeSource());
 
     private Collection<Transaction> transactions;
     private Position position;
 
     @Setup
     public void setup() {
+        preferences.put(ReportingService.LENGTH_OF_YEAR, "365");
+
         Security[] securities = Security.values();
-        Collection<SecurityPosition> securityPositions = Stream.of(securities)
-            .map(sec -> new SecurityPosition()
-                .quantity(BigDecimal.valueOf(1_000))
-                .security(sec))
-            .collect(Collectors.toList());
+        SecurityPosition[] securityPositions = Stream.of(securities)
+            .map(sec -> securityPosition(sec, BigDecimal.valueOf(1_000)))
+            .toArray(SecurityPosition[]::new);
 
         position = new Position()
             .cash(BigDecimal.valueOf(1_000_000))
-            .securityPositions(securityPositions);
+            .addSecurityPositions(securityPositions);
 
         LocalDate now = LocalDate.now();
         int dayOfYear = now.getDayOfYear();

@@ -16,6 +16,7 @@
 package pro.tremblay.core;
 
 import javax.annotation.concurrent.ThreadSafe;
+import javax.annotation.Nonnull;
 
 /**
  * Type of transactions.
@@ -28,12 +29,24 @@ public enum TransactionType {
         public boolean hasQuantity() {
             return true;
         }
+
+        @Override
+        public void revert(@Nonnull Position position, @Nonnull Transaction transaction) {
+            position.addCash(transaction.getCash());
+            position.addSecurityPosition(transaction.getSecurity(), transaction.getQuantity().negate());
+        }
     },
     /** Securities were sold to get cash */
     SELL {
         @Override
         public boolean hasQuantity() {
             return true;
+        }
+
+        @Override
+        public void revert(@Nonnull Position position, @Nonnull Transaction transaction) {
+            position.addCash(transaction.getCash().negate());
+            position.addSecurityPosition(transaction.getSecurity(), transaction.getQuantity());
         }
     },
     /** Cash was added to the position */
@@ -42,12 +55,23 @@ public enum TransactionType {
         public boolean hasQuantity() {
             return false;
         }
+
+        @Override
+        public void revert(@Nonnull Position position, @Nonnull Transaction transaction) {
+            position.addCash(transaction.getCash().negate());
+        }
+
     },
     /** Cash was removed from the position */
     WITHDRAWAL {
         @Override
         public boolean hasQuantity() {
             return false;
+        }
+
+        @Override
+        public void revert(@Nonnull Position position, @Nonnull Transaction transaction) {
+            position.addCash(transaction.getCash());
         }
     };
 
@@ -57,4 +81,13 @@ public enum TransactionType {
      * @return if some security quantity was exchanged
      */
     public abstract boolean hasQuantity();
+
+    /**
+     * Revert a transaction from a position.
+     *
+     * @param position the position on which the transaction will be reverted
+     * @param transaction the transaction to revert
+     */
+    public abstract void revert(@Nonnull Position position, @Nonnull Transaction transaction);
+
 }

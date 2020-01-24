@@ -15,16 +15,20 @@
  */
 package pro.tremblay.core;
 
-import javax.annotation.concurrent.ThreadSafe;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.temporal.TemporalUnit;
 
-/**
- * Enumeration listing useful available security. In real-life it would be a full-fledged java object but to keep
- * things simple, it's just an enum.
- */
-@ThreadSafe
-public enum Security {
-    APPL,
-    GOOGL,
-    IBM,
-    INTC
+public class StrangeTimeSource implements TimeSource {
+
+    private LocalDate today;
+
+    public StrangeTimeSource today(LocalDate today) {
+        this.today = today;
+        return this;
+    }
+
+    public LocalDate today() {
+        return today;
+    }
 }

@@ -17,7 +17,14 @@ package pro.tremblay.core;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static pro.tremblay.core.SecurityPosition.securityPosition;
 
 /**
  * All positions (cash and security) of a user. There is only one cash position since we are trading in only one
@@ -27,7 +34,30 @@ import java.util.Collection;
 public class Position {
 
     private BigDecimal cash;
-    private Collection<SecurityPosition> securityPositions;
+    private final Map<Security, BigDecimal> securityPositions = new HashMap<>();
+
+    public static Position position() {
+        return new Position();
+    }
+
+    public Position addSecurityPosition(Security security, BigDecimal quantity) {
+        securityPositions.compute(security, (sec, currentQuantity) -> {
+            if(currentQuantity == null) {
+                return quantity;
+            }
+            return quantity.add(currentQuantity);
+        });
+        return this;
+    }
+
+    public BigDecimal getSecurityPosition(Security security) {
+        return securityPositions.getOrDefault(security, BigDecimal.ZERO);
+    }
+
+    public void addCash(BigDecimal cash) {
+        this.cash = this.cash.add(cash);
+    }
+
 
     public BigDecimal getCash() {
         return cash;
@@ -38,13 +68,39 @@ public class Position {
         return this;
     }
 
-    public Collection<SecurityPosition> getSecurityPositions() {
-        return securityPositions;
+    public Position addSecurityPositions(SecurityPosition... securityPositions) {
+        for (SecurityPosition sp : securityPositions) {
+            this.securityPositions.put(sp.getSecurity(), sp.getQuantity());
+        }
+        return this;
     }
 
-    public Position securityPositions(Collection<SecurityPosition> securityPositions) {
-        this.securityPositions = securityPositions;
-        return this;
+    public Position copy() {
+        Position position = position()
+                .cash(cash);
+        position.securityPositions.putAll(securityPositions);
+        return position;
+    }
+
+    private List<Map.Entry<Security, BigDecimal>> sortedSecurityPositions() {
+        return securityPositions.entrySet().stream().sorted(Map.Entry.comparingByKey()).collect(Collectors.toList());
+    }
+
+    public BigDecimal securityPositionValue(LocalDate date, PriceService priceService) {
+        return securityPositions
+            .entrySet()
+            .stream()
+            .filter(entry -> entry.getValue().signum() != 0)
+            .map(entry -> priceService.getPrice(date, entry.getKey()).multiply(entry.getValue()))
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public Collection<SecurityPosition> getSecurityPositions() {
+        return securityPositions
+            .entrySet()
+            .stream()
+            .map(entry -> securityPosition(entry.getKey(), entry.getValue()))
+            .collect(Collectors.toList());
     }
 
     @Override

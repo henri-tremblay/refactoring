@@ -21,11 +21,13 @@ import static org.assertj.core.api.Assertions.*;
 
 public class PreferencesTest {
 
-    private Preferences preferences = Preferences.preferences();
+    private Preferences preferences = new Preferences();
 
     @Test
-    public void getString_unknownPreference() {
-        assertThat(preferences.getString("aaa")).isNull();
+    public void getString_unknowPreference() {
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> preferences.getString("aaa"))
+            .withMessage("aaa is not a known preference");
     }
 
     @Test

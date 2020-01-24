@@ -20,9 +20,9 @@ import javax.annotation.concurrent.ThreadSafe;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * Service returning security prices. This is actually a fake implementation using randomly generated prices.
@@ -30,13 +30,12 @@ import java.util.concurrent.ConcurrentMap;
 @ThreadSafe
 public class PriceService {
 
-    private static final ConcurrentMap<String, BigDecimal> prices = new ConcurrentHashMap<>();
+    private final Map<String, BigDecimal> prices = new HashMap<>();
 
-    private static final Random random = new Random();
-
-    static {
+    public PriceService(@Nonnull TimeSource timeSource) {
         // Randomly generated price since the beginning of the year
-        LocalDate now = LocalDate.now();
+        Random random = new Random();
+        LocalDate now = timeSource.today();
         for (Security security : Security.values()) {
             LocalDate start = now.withDayOfYear(1);
             BigDecimal price = BigDecimal.valueOf(100 + random.nextInt(200));
@@ -62,13 +61,11 @@ public class PriceService {
      * @return the price of the security at a given date
      */
     @Nonnull
-    public static BigDecimal getPrice(@Nonnull LocalDate date, @Nonnull Security security) {
+    public BigDecimal getPrice(@Nonnull LocalDate date, @Nonnull Security security) {
         BigDecimal price = prices.get(getKey(security, date));
         if(price == null) {
-            throw new IllegalArgumentException("No price for " + security + " on " + date);
+            throw new IllegalArgumentException("No price found at " + date + " for " + security);
         }
         return price;
     }
-
-    private PriceService() {}
 }

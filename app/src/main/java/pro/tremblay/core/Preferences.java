@@ -15,6 +15,7 @@
  */
 package pro.tremblay.core;
 
+import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -25,33 +26,23 @@ import java.util.concurrent.ConcurrentMap;
 @ThreadSafe
 public class Preferences {
 
-    private static final Preferences INSTANCE = new Preferences();
-
-    public static Preferences preferences() {
-        return INSTANCE;
-    }
-
     private final ConcurrentMap<String, String> preferences = new ConcurrentHashMap<>();
 
-    private Preferences() {}
-
-    public void put(String key, String value) {
+    public void put(@Nonnull String key, @Nonnull String value) {
         preferences.put(key, value);
     }
 
-    public String getString(String key) {
+    @Nonnull
+    public String getString(@Nonnull String key) {
         String value = preferences.get(key);
-        if (value != null) {
-            return value;
-        }
-        return System.getProperty(key);
-    }
-
-    public int getInteger(String key) {
-        String value = getString(key);
         if (value == null) {
             throw new IllegalArgumentException(key + " is not a known preference");
         }
+        return value;
+    }
+
+    public int getInteger(@Nonnull String key) {
+        String value = getString(key);
         return Integer.parseInt(value);
     }
 }
