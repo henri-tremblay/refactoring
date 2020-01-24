@@ -15,9 +15,12 @@
  */
 package pro.tremblay.core;
 
+import javax.annotation.concurrent.ThreadSafe;
+
 /**
  * Type of transactions.
  */
+@ThreadSafe
 public enum TransactionType {
     /** Securities were bought using cash */
     BUY {

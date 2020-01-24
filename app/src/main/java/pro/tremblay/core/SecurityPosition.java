@@ -15,11 +15,13 @@
  */
 package pro.tremblay.core;
 
+import javax.annotation.concurrent.NotThreadSafe;
 import java.math.BigDecimal;
 
 /**
  * Quantity possessed of a given security.
  */
+@NotThreadSafe
 public class SecurityPosition {
 
     private Security security;

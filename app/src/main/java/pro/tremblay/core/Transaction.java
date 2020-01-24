@@ -15,12 +15,14 @@
  */
 package pro.tremblay.core;
 
+import javax.annotation.concurrent.NotThreadSafe;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 /**
  * A transaction that happened on a position.
  */
+@NotThreadSafe
 public class Transaction {
 
     /** Type of transaction **/

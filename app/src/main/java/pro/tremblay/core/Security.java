@@ -15,10 +15,13 @@
  */
 package pro.tremblay.core;
 
+import javax.annotation.concurrent.ThreadSafe;
+
 /**
  * Enumeration listing useful available security. In real-life it would be a full-fledged java object but to keep
  * things simple, it's just an enum.
  */
+@ThreadSafe
 public enum Security {
     APPL,
     GOOGL,
