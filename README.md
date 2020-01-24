@@ -21,3 +21,4 @@ To run: `mvn package -DskipTests && java -jar app/target/benchmarks.jar`
 
 * Upgrade license: `./mvnw validate license:format`
 * Upgrade the wrapper: `./mvnw -N io.takari:maven:0.7.7:wrapper`
+* Check plugins to upgrade: `./mvnw versions:display-dependency-updates versions:display-plugin-updates`

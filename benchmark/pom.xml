@@ -51,7 +51,7 @@
         <!--
             JMH version to use with this project.
           -->
-        <jmh.version>1.22</jmh.version>
+        <jmh.version>1.23</jmh.version>
 
         <!--
             Name of the benchmark Uber-JAR to generate.

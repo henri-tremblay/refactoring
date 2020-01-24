@@ -114,6 +114,11 @@
                     <artifactId>versions-maven-plugin</artifactId>
                     <version>2.7</version>
                 </plugin>
+                <plugin>
+                    <groupId>com.mycila</groupId>
+                    <artifactId>license-maven-plugin</artifactId>
+                    <version>3.0</version>
+                </plugin>
 
                 <plugin>
                     <groupId>org.pitest</groupId>
@@ -176,7 +181,6 @@
             <plugin>
                 <groupId>com.mycila</groupId>
                 <artifactId>license-maven-plugin</artifactId>
-                <version>3.0</version>
                 <configuration>
                     <header>${project.basedir}/header.txt</header>
                     <strictCheck>true</strictCheck>
@@ -208,7 +212,7 @@
 
             <plugin>
                 <artifactId>maven-remote-resources-plugin</artifactId>
-                <version>1.5</version>
+                <version>1.6.0</version>
                 <executions>
                     <execution>
                         <goals>
