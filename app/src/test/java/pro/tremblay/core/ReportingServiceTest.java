@@ -29,6 +29,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.mock;
 import static org.easymock.EasyMock.replay;
+import static pro.tremblay.core.Amount.amount;
 import static pro.tremblay.core.BigDecimalUtil.bd;
 import static pro.tremblay.core.Position.position;
 import static pro.tremblay.core.Transaction.transaction;
@@ -41,8 +42,7 @@ public class ReportingServiceTest {
 
     private ReportingService reportingService = new ReportingService(preferences, timeSource, priceService);
 
-    private final Position current = position()
-            .cash(BigDecimal.ZERO);
+    private final Position current = position();
 
     private final LocalDate today = LocalDate.ofYearDay(2019, 200);
     private final LocalDate hundredDaysAgo = today.minusDays(100);
@@ -63,11 +63,11 @@ public class ReportingServiceTest {
 
     @Test
     public void calculateReturnOnInvestmentYTD_cashAdded() {
-        current.cash(bd(200));
+        current.cash(amount(200));
 
         Collection<Transaction> transactions = Collections.singleton(
                 transaction()
-                        .cash(bd(100))
+                        .cash(amount(100))
                         .type(TransactionType.DEPOSIT)
                         .date(hundredDaysAgo));
 
@@ -83,7 +83,7 @@ public class ReportingServiceTest {
             transaction()
                 .security(Security.GOOGL)
                 .quantity(bd(50))
-                .cash(bd(100))
+                .cash(amount(100))
                 .type(TransactionType.BUY)
                 .date(hundredDaysAgo));
 
@@ -105,15 +105,15 @@ public class ReportingServiceTest {
 
     @Test
     public void calculateReturnOnInvestmentYTD_twoCashTransactions() {
-        current.cash(bd(200));
+        current.cash(amount(200));
 
         Collection<Transaction> transactions = Arrays.asList(
             new Transaction()
-                .cash(bd(100))
+                .cash(amount(100))
                 .type(TransactionType.DEPOSIT)
                 .date(hundredDaysAgo),
             new Transaction()
-                .cash(bd(50))
+                .cash(amount(50))
                 .type(TransactionType.DEPOSIT)
                 .date(hundredDaysAgo.minusDays(1)));
 

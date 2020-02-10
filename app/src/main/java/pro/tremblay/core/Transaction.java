@@ -31,7 +31,7 @@ public class Transaction {
     /** Date at which the transaction occured */
     private LocalDate date;
     /** Amount of cash exchanged during the transaction. The amount is always positive, the side of the transaction is determined by its type */
-    private BigDecimal cash;
+    private Amount cash;
     /** Securities bought or sold if securities are involved in the transaction */
     private Security security;
     /** Quantity of securities exchanged during the transaction. The quantity is always positive, the side of the transaction is determined by its type */
@@ -59,11 +59,11 @@ public class Transaction {
         return this;
     }
 
-    public BigDecimal getCash() {
+    public Amount getCash() {
         return cash;
     }
 
-    public Transaction cash(BigDecimal cash) {
+    public Transaction cash(Amount cash) {
         this.cash = cash;
         return this;
     }

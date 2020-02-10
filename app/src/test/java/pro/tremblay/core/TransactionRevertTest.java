@@ -18,6 +18,7 @@ package pro.tremblay.core;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
+import static pro.tremblay.core.Amount.amount;
 import static pro.tremblay.core.BigDecimalUtil.bd;
 import static pro.tremblay.core.Position.position;
 import static pro.tremblay.core.SecurityPosition.securityPosition;
@@ -26,7 +27,7 @@ import static pro.tremblay.core.Transaction.transaction;
 public class TransactionRevertTest {
 
     private Position position = position()
-        .cash(bd(100));
+        .cash(amount(100));
 
     @Test
     public void hasQuantity() {
@@ -40,13 +41,13 @@ public class TransactionRevertTest {
     public void revertBuy() {
         Transaction transaction = transaction()
             .type(TransactionType.BUY)
-            .cash(bd(50))
+            .cash(amount(50))
             .security(Security.GOOGL)
             .quantity(bd(20));
 
         transaction.revert(position);
 
-        assertThat(position.getCash()).isEqualTo("150");
+        assertThat(position.getCash().toBigDecimal()).isEqualTo("150");
         assertThat(position.getSecurityPositions())
             .usingFieldByFieldElementComparator()
             .containsOnly(securityPosition(Security.GOOGL, bd(-20)));
@@ -54,7 +55,7 @@ public class TransactionRevertTest {
         // Do it again now that the position exists
         transaction.revert(position);
 
-        assertThat(position.getCash()).isEqualTo("200");
+        assertThat(position.getCash().toBigDecimal()).isEqualTo("200");
         assertThat(position.getSecurityPositions())
             .usingFieldByFieldElementComparator()
             .containsOnly(securityPosition(Security.GOOGL, bd(-40)));
@@ -64,13 +65,13 @@ public class TransactionRevertTest {
     public void revertSell() {
         Transaction transaction = transaction()
             .type(TransactionType.SELL)
-            .cash(bd(30))
+            .cash(amount(30))
             .security(Security.GOOGL)
             .quantity(bd(20));
 
         transaction.revert(position);
 
-        assertThat(position.getCash()).isEqualTo("70");
+        assertThat(position.getCash().toBigDecimal()).isEqualTo("70");
         assertThat(position.getSecurityPositions())
             .usingFieldByFieldElementComparator()
             .containsOnly(securityPosition(Security.GOOGL, bd(20)));
@@ -78,7 +79,7 @@ public class TransactionRevertTest {
         // Do it again now that the position exists
         transaction.revert(position);
 
-        assertThat(position.getCash()).isEqualTo("40");
+        assertThat(position.getCash().toBigDecimal()).isEqualTo("40");
         assertThat(position.getSecurityPositions())
             .usingFieldByFieldElementComparator()
             .containsOnly(securityPosition(Security.GOOGL, bd(40)));
@@ -89,11 +90,11 @@ public class TransactionRevertTest {
     public void revertDeposit() {
         Transaction transaction = transaction()
             .type(TransactionType.DEPOSIT)
-            .cash(bd(30));
+            .cash(amount(30));
 
         transaction.revert(position);
 
-        assertThat(position.getCash()).isEqualTo("70");
+        assertThat(position.getCash().toBigDecimal()).isEqualTo("70");
         assertThat(position.getSecurityPositions()).isEmpty();
     }
 
@@ -101,11 +102,11 @@ public class TransactionRevertTest {
     public void revertWithdrawal() {
         Transaction transaction = transaction()
             .type(TransactionType.WITHDRAWAL)
-            .cash(bd(30));
+            .cash(amount(30));
 
         transaction.revert(position);
 
-        assertThat(position.getCash()).isEqualTo("130");
+        assertThat(position.getCash().toBigDecimal()).isEqualTo("130");
         assertThat(position.getSecurityPositions()).isEmpty();
     }
 }

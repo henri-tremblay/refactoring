@@ -75,20 +75,21 @@ public class ReportingService {
 
         rewindTransactions(beginningOfYear, now, working, orderedTransaction);
 
-        BigDecimal initialValue = calculatePositionValue(beginningOfYear, working);
+        Amount initialValue = calculatePositionValue(beginningOfYear, working);
 
-        if(initialValue.signum() == 0) {
+        if(initialValue.isZero()) {
             return BigDecimal.ZERO.setScale(2, RoundingMode.UNNECESSARY);
         }
 
-        BigDecimal currentValue = calculatePositionValue(now, current);
+        Amount currentValue = calculatePositionValue(now, current);
 
         return calculateRoi(now, initialValue, currentValue);
     }
 
-    private BigDecimal calculateRoi(LocalDate now, BigDecimal initialValue, BigDecimal currentValue) {
-        BigDecimal roi = currentValue.subtract(initialValue)
-                    .divide(initialValue, 10, RoundingMode.HALF_UP)
+    private BigDecimal calculateRoi(LocalDate now, Amount initialValue, Amount currentValue) {
+        BigDecimal roi = Amount.substract(currentValue, initialValue)
+                    .toBigDecimal()
+                    .divide(initialValue.toBigDecimal(), 10, RoundingMode.HALF_UP)
                     .multiply(BigDecimal.valueOf(100L));
 
         int yearLength = preferences.getInteger(LENGTH_OF_YEAR);
@@ -97,10 +98,10 @@ public class ReportingService {
             .divide(BigDecimal.valueOf(now.getDayOfYear()), 2, RoundingMode.HALF_UP);
     }
 
-    private BigDecimal calculatePositionValue(LocalDate beginningOfYear, Position working) {
-        BigDecimal initialCashValue = working.getCash();
-        BigDecimal initialSecPosValue = working.securityPositionValue(beginningOfYear, priceService);
-        return initialCashValue.add(initialSecPosValue);
+    private Amount calculatePositionValue(LocalDate beginningOfYear, Position working) {
+        Amount initialCashValue = working.getCash();
+        Amount initialSecPosValue = working.securityPositionValue(beginningOfYear, priceService);
+        return Amount.add(initialCashValue, initialSecPosValue);
     }
 
     private void rewindTransactions(LocalDate beginningOfYear, LocalDate today, Position working, List<Transaction> orderedTransaction) {

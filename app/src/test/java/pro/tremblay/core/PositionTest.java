@@ -27,13 +27,14 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.mock;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static pro.tremblay.core.Amount.amount;
 import static pro.tremblay.core.BigDecimalUtil.bd;
 import static pro.tremblay.core.Position.position;
 
 public class PositionTest {
 
     private Position position = position()
-        .cash(BigDecimal.TEN)
+        .cash(amount(10))
         .addSecurityPosition(Security.GOOGL, bd(22))
         .addSecurityPosition(Security.APPL, bd(11));
 
@@ -49,8 +50,8 @@ public class PositionTest {
 
     @Test
     public void addCash() {
-        position.addCash(bd(200));
-        assertThat(position.getCash()).isEqualTo("210");
+        position.addCash(amount(200));
+        assertThat(position.getCash().toBigDecimal()).isEqualTo("210");
     }
 
     @Test
@@ -76,8 +77,8 @@ public class PositionTest {
         expect(priceService.getPrice(now, Security.APPL)).andStubReturn(bd(5));
         replay(priceService);
 
-        BigDecimal result = position.securityPositionValue(now, priceService);
-        assertThat(result).isEqualTo("275"); // 22 * 10 + 11 * 5
+        Amount result = position.securityPositionValue(now, priceService);
+        assertThat(result.toBigDecimal()).isEqualTo("275"); // 22 * 10 + 11 * 5
     }
 
     @Test
@@ -90,8 +91,8 @@ public class PositionTest {
         PriceService priceService = mock(PriceService.class);
         replay(priceService);
 
-        BigDecimal result = position.securityPositionValue(now, priceService);
-        assertThat(result).isZero();
+        Amount result = position.securityPositionValue(now, priceService);
+        assertThat(result).isEqualTo(Amount.zero());
 
         verify(priceService);
     }

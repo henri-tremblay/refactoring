@@ -42,6 +42,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static pro.tremblay.core.Amount.amount;
 import static pro.tremblay.core.SecurityPosition.securityPosition;
 
 @BenchmarkMode(Mode.Throughput)
@@ -68,7 +69,7 @@ public class ReportingServiceBenchmark {
             .toArray(SecurityPosition[]::new);
 
         position = new Position()
-            .cash(BigDecimal.valueOf(1_000_000))
+            .cash(amount(1_000_000))
             .addSecurityPositions(securityPositions);
 
         LocalDate now = LocalDate.now();
@@ -81,7 +82,7 @@ public class ReportingServiceBenchmark {
             .mapToObj(quantity -> {
                 Transaction t = new Transaction();
                 return t.date(now.minusDays(random.nextInt(dayOfYear)))
-                    .cash(BigDecimal.valueOf(random.nextInt(1_000)))
+                    .cash(amount(random.nextInt(1_000)))
                     .type(transactionTypes[random.nextInt(transactionTypes.length)])
                     .quantity(t.getType().hasQuantity() ? BigDecimal.valueOf(quantity) : BigDecimal.ZERO)
                     .security(t.getType().hasQuantity() ? securities[random.nextInt(securities.length)] : null);

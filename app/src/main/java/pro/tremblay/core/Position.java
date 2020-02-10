@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static pro.tremblay.core.Amount.amount;
 import static pro.tremblay.core.SecurityPosition.securityPosition;
 
 /**
@@ -33,7 +34,7 @@ import static pro.tremblay.core.SecurityPosition.securityPosition;
 @NotThreadSafe
 public class Position {
 
-    private BigDecimal cash;
+    private Amount cash = Amount.zero();
     private final Map<Security, BigDecimal> securityPositions = new HashMap<>();
 
     public static Position position() {
@@ -54,16 +55,15 @@ public class Position {
         return securityPositions.getOrDefault(security, BigDecimal.ZERO);
     }
 
-    public void addCash(BigDecimal cash) {
-        this.cash = this.cash.add(cash);
+    public void addCash(Amount cash) {
+        this.cash = Amount.add(this.cash, cash);
     }
 
-
-    public BigDecimal getCash() {
+    public Amount getCash() {
         return cash;
     }
 
-    public Position cash(BigDecimal cash) {
+    public Position cash(Amount cash) {
         this.cash = cash;
         return this;
     }
@@ -77,7 +77,7 @@ public class Position {
 
     public Position copy() {
         Position position = position()
-                .cash(cash);
+                .cash(getCash());
         position.securityPositions.putAll(securityPositions);
         return position;
     }
@@ -86,13 +86,13 @@ public class Position {
         return securityPositions.entrySet().stream().sorted(Map.Entry.comparingByKey()).collect(Collectors.toList());
     }
 
-    public BigDecimal securityPositionValue(LocalDate date, PriceService priceService) {
-        return securityPositions
+    public Amount securityPositionValue(LocalDate date, PriceService priceService) {
+        return amount(securityPositions
             .entrySet()
             .stream()
             .filter(entry -> entry.getValue().signum() != 0)
             .map(entry -> priceService.getPrice(date, entry.getKey()).multiply(entry.getValue()))
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+            .reduce(BigDecimal.ZERO, BigDecimal::add));
     }
 
     public Collection<SecurityPosition> getSecurityPositions() {
@@ -107,7 +107,7 @@ public class Position {
     public String toString() {
         return "Position{" +
             "cash=" + cash +
-            ", securityPositions=" + securityPositions +
+            ", securityPositions=" + sortedSecurityPositions() +
             '}';
     }
 }
