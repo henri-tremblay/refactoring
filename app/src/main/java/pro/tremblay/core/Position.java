@@ -16,7 +16,6 @@
 package pro.tremblay.core;
 
 import javax.annotation.concurrent.NotThreadSafe;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static pro.tremblay.core.Amount.amount;
 import static pro.tremblay.core.SecurityPosition.securityPosition;
 
 /**
@@ -35,28 +33,29 @@ import static pro.tremblay.core.SecurityPosition.securityPosition;
 public class Position {
 
     private Amount cash = Amount.zero();
-    private final Map<Security, BigDecimal> securityPositions = new HashMap<>();
+    private final Map<Security, Quantity> securityPositions = new HashMap<>();
 
     public static Position position() {
         return new Position();
     }
 
-    public Position addSecurityPosition(Security security, BigDecimal quantity) {
+    public Position addSecurityPosition(Security security, Quantity quantity) {
         securityPositions.compute(security, (sec, currentQuantity) -> {
             if(currentQuantity == null) {
-                return quantity;
+                return quantity.isZero() ? null : quantity;
             }
-            return quantity.add(currentQuantity);
+            Quantity sum = quantity.add(currentQuantity);
+            return sum.isZero() ? null : sum;
         });
         return this;
     }
 
-    public BigDecimal getSecurityPosition(Security security) {
-        return securityPositions.getOrDefault(security, BigDecimal.ZERO);
+    public Quantity getSecurityPosition(Security security) {
+        return securityPositions.getOrDefault(security, Quantity.zero());
     }
 
     public void addCash(Amount cash) {
-        this.cash = Amount.add(this.cash, cash);
+        this.cash = this.cash.add(cash);
     }
 
     public Amount getCash() {
@@ -70,7 +69,10 @@ public class Position {
 
     public Position addSecurityPositions(SecurityPosition... securityPositions) {
         for (SecurityPosition sp : securityPositions) {
-            this.securityPositions.put(sp.getSecurity(), sp.getQuantity());
+            // No need to add flat positions
+            if (!sp.isFlat()) {
+                this.securityPositions.put(sp.getSecurity(), sp.getQuantity());
+            }
         }
         return this;
     }
@@ -82,17 +84,16 @@ public class Position {
         return position;
     }
 
-    private List<Map.Entry<Security, BigDecimal>> sortedSecurityPositions() {
+    private List<Map.Entry<Security, Quantity>> sortedSecurityPositions() {
         return securityPositions.entrySet().stream().sorted(Map.Entry.comparingByKey()).collect(Collectors.toList());
     }
 
     public Amount securityPositionValue(LocalDate date, PriceService priceService) {
-        return amount(securityPositions
+        return securityPositions
             .entrySet()
             .stream()
-            .filter(entry -> entry.getValue().signum() != 0)
             .map(entry -> priceService.getPrice(date, entry.getKey()).multiply(entry.getValue()))
-            .reduce(BigDecimal.ZERO, BigDecimal::add));
+            .reduce(Amount.zero(), Numeric::add);
     }
 
     public Collection<SecurityPosition> getSecurityPositions() {

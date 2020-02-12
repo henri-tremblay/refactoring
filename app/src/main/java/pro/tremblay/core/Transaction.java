@@ -17,7 +17,6 @@ package pro.tremblay.core;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.NotThreadSafe;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 /**
@@ -35,7 +34,7 @@ public class Transaction {
     /** Securities bought or sold if securities are involved in the transaction */
     private Security security;
     /** Quantity of securities exchanged during the transaction. The quantity is always positive, the side of the transaction is determined by its type */
-    private BigDecimal quantity;
+    private Quantity quantity;
 
     public static Transaction transaction() {
         return new Transaction();
@@ -77,11 +76,11 @@ public class Transaction {
         return this;
     }
 
-    public BigDecimal getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
     }
 
-    public Transaction quantity(BigDecimal quantity) {
+    public Transaction quantity(Quantity quantity) {
         this.quantity = quantity;
         return this;
     }

@@ -25,22 +25,22 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.mock;
 import static org.easymock.EasyMock.replay;
-import static pro.tremblay.core.Amount.amount;
-import static pro.tremblay.core.BigDecimalUtil.bd;
+import static pro.tremblay.core.Amount.amnt;
+import static pro.tremblay.core.Assertions.assertThat;
 import static pro.tremblay.core.Position.position;
+import static pro.tremblay.core.Quantity.qty;
 import static pro.tremblay.core.Transaction.transaction;
 
 public class ReportingServiceTest {
 
-    private Preferences preferences = mock(Preferences.class);
-    private StrangeTimeSource timeSource = new StrangeTimeSource();
-    private PriceService priceService = mock(PriceService.class);
+    private final Preferences preferences = mock(Preferences.class);
+    private final StrangeTimeSource timeSource = new StrangeTimeSource();
+    private final PriceService priceService = mock(PriceService.class);
 
-    private ReportingService reportingService = new ReportingService(preferences, timeSource, priceService);
+    private final ReportingService reportingService = new ReportingService(preferences, timeSource, priceService);
 
     private final Position current = position();
 
@@ -63,11 +63,11 @@ public class ReportingServiceTest {
 
     @Test
     public void calculateReturnOnInvestmentYTD_cashAdded() {
-        current.cash(amount(200));
+        current.cash(amnt(200));
 
         Collection<Transaction> transactions = Collections.singleton(
                 transaction()
-                        .cash(amount(100))
+                        .cash(amnt(100))
                         .type(TransactionType.DEPOSIT)
                         .date(hundredDaysAgo));
 
@@ -77,17 +77,17 @@ public class ReportingServiceTest {
 
     @Test
     public void calculateReturnOnInvestmentYTD_secBought() {
-        current.addSecurityPosition(Security.GOOGL, bd(50));
+        current.addSecurityPosition(Security.GOOGL, qty(50));
 
         Collection<Transaction> transactions = Collections.singleton(
             transaction()
                 .security(Security.GOOGL)
-                .quantity(bd(50))
-                .cash(amount(100))
+                .quantity(qty(50))
+                .cash(amnt(100))
                 .type(TransactionType.BUY)
                 .date(hundredDaysAgo));
 
-        expect(priceService.getPrice(today, Security.GOOGL)).andStubReturn(bd(2));
+        expect(priceService.getPrice(today, Security.GOOGL)).andStubReturn(amnt(2));
         replay(priceService);
 
         BigDecimal roi = reportingService.calculateReturnOnInvestmentYTD(current, transactions);
@@ -105,15 +105,15 @@ public class ReportingServiceTest {
 
     @Test
     public void calculateReturnOnInvestmentYTD_twoCashTransactions() {
-        current.cash(amount(200));
+        current.cash(amnt(200));
 
         Collection<Transaction> transactions = Arrays.asList(
             new Transaction()
-                .cash(amount(100))
+                .cash(amnt(100))
                 .type(TransactionType.DEPOSIT)
                 .date(hundredDaysAgo),
             new Transaction()
-                .cash(amount(50))
+                .cash(amnt(50))
                 .type(TransactionType.DEPOSIT)
                 .date(hundredDaysAgo.minusDays(1)));
 
@@ -128,15 +128,15 @@ public class ReportingServiceTest {
 
     @Test
     public void calculateReturnOnInvestmentYTD_twoCashTransactionsOnTheSameDay() {
-        current.cash(bd(200));
+        current.cash(amnt(200));
 
         Collection<Transaction> transactions = Arrays.asList(
             new Transaction()
-                .cash(bd(100))
+                .cash(amnt(100))
                 .type(TransactionType.DEPOSIT)
                 .date(hundredDaysAgo),
             new Transaction()
-                .cash(bd(50))
+                .cash(amnt(50))
                 .type(TransactionType.DEPOSIT)
                 .date(hundredDaysAgo));
 

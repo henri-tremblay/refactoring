@@ -17,7 +17,7 @@ package pro.tremblay.core;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.NotThreadSafe;
-import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  * Quantity possessed of a given security.
@@ -26,13 +26,13 @@ import java.math.BigDecimal;
 public class SecurityPosition {
 
     private final Security security;
-    private final BigDecimal quantity;
+    private final Quantity quantity;
 
-    public static SecurityPosition securityPosition(Security security, BigDecimal quantity) {
+    public static SecurityPosition securityPosition(Security security, Quantity quantity) {
         return new SecurityPosition(security, quantity);
     }
 
-    public SecurityPosition(Security security, BigDecimal quantity) {
+    public SecurityPosition(Security security, Quantity quantity) {
         this.security = security;
         this.quantity = quantity;
     }
@@ -43,7 +43,7 @@ public class SecurityPosition {
     }
 
     @Nonnull
-    public BigDecimal getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
     }
 
@@ -55,7 +55,24 @@ public class SecurityPosition {
             '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SecurityPosition that = (SecurityPosition) o;
+        return security == that.security && quantity.equals(that.quantity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(security, quantity);
+    }
+
     public boolean isFlat() {
-        return quantity.signum() == 0;
+        return quantity.isZero();
     }
 }

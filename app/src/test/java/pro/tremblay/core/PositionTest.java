@@ -17,26 +17,23 @@ package pro.tremblay.core;
 
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collections;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.mock;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static pro.tremblay.core.Amount.amount;
-import static pro.tremblay.core.BigDecimalUtil.bd;
+import static pro.tremblay.core.Amount.amnt;
+import static pro.tremblay.core.Assertions.assertThat;
 import static pro.tremblay.core.Position.position;
+import static pro.tremblay.core.Quantity.qty;
 
 public class PositionTest {
 
     private Position position = position()
-        .cash(amount(10))
-        .addSecurityPosition(Security.GOOGL, bd(22))
-        .addSecurityPosition(Security.APPL, bd(11));
+        .cash(amnt(10))
+        .addSecurityPosition(Security.GOOGL, qty(22))
+        .addSecurityPosition(Security.APPL, qty(11));
 
     @Test
     public void copy() {
@@ -50,21 +47,21 @@ public class PositionTest {
 
     @Test
     public void addCash() {
-        position.addCash(amount(200));
-        assertThat(position.getCash().toBigDecimal()).isEqualTo("210");
+        position.addCash(amnt(200));
+        assertThat(position.getCash()).isEqualTo("210.00");
     }
 
     @Test
     public void addSecurity_existing() {
-        position.addSecurityPosition(Security.GOOGL, bd(30));
-        BigDecimal securityPosition = position.getSecurityPosition(Security.GOOGL);
+        position.addSecurityPosition(Security.GOOGL, qty(30));
+        Quantity securityPosition = position.getSecurityPosition(Security.GOOGL);
         assertThat(securityPosition).isEqualTo("52");
     }
 
     @Test
     public void addSecurity_new() {
-        position.addSecurityPosition(Security.IBM, bd(30));
-        BigDecimal securityPosition = position.getSecurityPosition(Security.IBM);
+        position.addSecurityPosition(Security.IBM, qty(30));
+        Quantity securityPosition = position.getSecurityPosition(Security.IBM);
         assertThat(securityPosition).isEqualTo("30");
     }
 
@@ -73,12 +70,12 @@ public class PositionTest {
         LocalDate now = LocalDate.now();
 
         PriceService priceService = mock(PriceService.class);
-        expect(priceService.getPrice(now, Security.GOOGL)).andStubReturn(bd(10));
-        expect(priceService.getPrice(now, Security.APPL)).andStubReturn(bd(5));
+        expect(priceService.getPrice(now, Security.GOOGL)).andStubReturn(amnt(10));
+        expect(priceService.getPrice(now, Security.APPL)).andStubReturn(amnt(5));
         replay(priceService);
 
         Amount result = position.securityPositionValue(now, priceService);
-        assertThat(result.toBigDecimal()).isEqualTo("275"); // 22 * 10 + 11 * 5
+        assertThat(result).isEqualTo("275.00"); // 22 * 10 + 11 * 5
     }
 
     @Test
@@ -86,7 +83,7 @@ public class PositionTest {
         LocalDate now = LocalDate.now();
 
         position = position()
-            .addSecurityPosition(Security.APPL, bd(0));
+            .addSecurityPosition(Security.APPL, qty(0));
 
         PriceService priceService = mock(PriceService.class);
         replay(priceService);
@@ -105,14 +102,14 @@ public class PositionTest {
 
     @Test
     public void testToString() {
-        assertThat(position.toString()).isEqualTo("Position{cash=10, securityPositions={APPL=11, GOOGL=22}}");
+        assertThat(position.toString()).isEqualTo("Position{cash=10.00$, securityPositions=[APPL=11, GOOGL=22]}");
     }
 
     @Test
     public void addSecurityPositions() {
         position.addSecurityPositions(
-            SecurityPosition.securityPosition(Security.IBM, bd(100)),
-            SecurityPosition.securityPosition(Security.INTC, bd(200)));
+            SecurityPosition.securityPosition(Security.IBM, qty(100)),
+            SecurityPosition.securityPosition(Security.INTC, qty(200)));
         assertThat(position.getSecurityPosition(Security.IBM)).isEqualTo("100");
         assertThat(position.getSecurityPosition(Security.INTC)).isEqualTo("200");
         assertThat(position.getSecurityPosition(Security.GOOGL)).isEqualTo("22");

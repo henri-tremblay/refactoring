@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,13 @@ package pro.tremblay.core;
 
 import javax.annotation.Nonnull;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 
-public final class Amount {
-    private final BigDecimal value;
+public final class Amount extends Numeric<Amount> {
+
+    /** To simplify, we consider everything is in the same currency so all amounts have a precision of 2 */
+    private static final int precision = 2;
 
     private static final Amount ZERO = new Amount(BigDecimal.ZERO);
 
@@ -28,57 +31,33 @@ public final class Amount {
         return ZERO;
     }
 
-    public static Amount amount(long value) {
+    public static Amount amnt(long value) {
         return new Amount(BigDecimal.valueOf(value));
     }
 
-    public static Amount amount(@Nonnull BigDecimal value) {
+    public static Amount amnt(@Nonnull BigDecimal value) {
         return new Amount(Objects.requireNonNull(value));
     }
 
-    public static Amount amount(@Nonnull String value) {
+    public static Amount amnt(@Nonnull String value) {
         return new Amount(new BigDecimal(Objects.requireNonNull(value)));
     }
 
-    public static Amount add(Amount a1, Amount a2) {
-        return new Amount(a1.value.add(a2.value));
-    }
-
-    public static Amount substract(Amount a1, Amount a2) {
-        return new Amount(a1.value.subtract(a2.value));
-    }
-
     private Amount(@Nonnull BigDecimal value) {
-        this.value = value;
-    }
-
-    public BigDecimal toBigDecimal() {
-        return value;
-    }
-
-    public boolean isZero() {
-        return value.signum() == 0;
-    }
-
-    public Amount negate() {
-        return new Amount(value.negate());
+        super(value.setScale(precision, RoundingMode.HALF_UP));
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Amount amount = (Amount) o;
-        return value.equals(amount.value);
+    protected Amount fromValue(@Nonnull BigDecimal newValue) {
+        return new Amount(newValue);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(value);
+    public Amount multiply(Quantity quantity) {
+        return new Amount(value.multiply(quantity.value));
     }
 
     @Override
     public String toString() {
-        return value.toPlainString();
+        return super.toString() + "$";
     }
 }

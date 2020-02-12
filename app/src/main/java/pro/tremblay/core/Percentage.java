@@ -15,21 +15,29 @@
  */
 package pro.tremblay.core;
 
-import org.junit.jupiter.api.Test;
+import javax.annotation.Nonnull;
+import javax.annotation.concurrent.ThreadSafe;
+import java.math.BigDecimal;
+import java.util.Objects;
 
-import static org.assertj.core.api.Assertions.*;
-import static pro.tremblay.core.BigDecimalUtil.bd;
+@ThreadSafe
+public final class Percentage extends Numeric<Percentage> {
 
-public class BigDecimalUtilTest {
-
-    @Test
-    public void bdInt() {
-        assertThat(bd(4)).isEqualTo("4");
+    public static Percentage pct(@Nonnull BigDecimal value) {
+        return new Percentage(Objects.requireNonNull(value));
     }
 
-    @Test
-    public void bdString() {
-        assertThat(bd("4.12")).isEqualTo("4.12");
+    private Percentage(@Nonnull BigDecimal value) {
+        super(value);
     }
 
+    @Override
+    protected Percentage fromValue(@Nonnull BigDecimal newValue) {
+        return new Percentage(newValue);
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + "%";
+    }
 }

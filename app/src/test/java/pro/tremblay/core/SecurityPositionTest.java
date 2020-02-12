@@ -17,8 +17,6 @@ package pro.tremblay.core;
 
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
-
 import static org.assertj.core.api.Assertions.*;
 import static pro.tremblay.core.SecurityPosition.securityPosition;
 
@@ -26,19 +24,19 @@ public class SecurityPositionTest {
 
     @Test
     public void isFlat_notFlat() {
-        SecurityPosition securityPosition = securityPosition(Security.GOOGL, BigDecimal.TEN);
+        SecurityPosition securityPosition = securityPosition(Security.GOOGL, Quantity.ten());
         assertThat(securityPosition.isFlat()).isFalse();
     }
 
     @Test
     public void isFlat_flat() {
-        SecurityPosition securityPosition = securityPosition(Security.GOOGL, BigDecimal.ZERO);
+        SecurityPosition securityPosition = securityPosition(Security.GOOGL, Quantity.zero());
         assertThat(securityPosition.isFlat()).isTrue();
     }
 
     @Test
     public void testToString() {
-        SecurityPosition securityPosition = securityPosition(Security.GOOGL, BigDecimal.TEN);
+        SecurityPosition securityPosition = securityPosition(Security.GOOGL, Quantity.ten());
         assertThat(securityPosition.toString()).isEqualTo("SecurityPosition{security=GOOGL, quantity=10}");
     }
 }

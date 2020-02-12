@@ -25,8 +25,10 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
+import pro.tremblay.core.Amount;
 import pro.tremblay.core.Position;
 import pro.tremblay.core.Preferences;
+import pro.tremblay.core.Quantity;
 import pro.tremblay.core.ReportingService;
 import pro.tremblay.core.Security;
 import pro.tremblay.core.SecurityPosition;
@@ -42,7 +44,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static pro.tremblay.core.Amount.amount;
+import static pro.tremblay.core.Quantity.qty;
 import static pro.tremblay.core.SecurityPosition.securityPosition;
 
 @BenchmarkMode(Mode.Throughput)
@@ -53,8 +55,8 @@ import static pro.tremblay.core.SecurityPosition.securityPosition;
 @State(Scope.Benchmark)
 public class ReportingServiceBenchmark {
 
-    private Preferences preferences = new Preferences();
-    private ReportingService service = new ReportingService(preferences, new SystemTimeSource());
+    private final Preferences preferences = new Preferences();
+    private final ReportingService service = new ReportingService(preferences, new SystemTimeSource());
 
     private Collection<Transaction> transactions;
     private Position position;
@@ -65,11 +67,11 @@ public class ReportingServiceBenchmark {
 
         Security[] securities = Security.values();
         SecurityPosition[] securityPositions = Stream.of(securities)
-            .map(sec -> securityPosition(sec, BigDecimal.valueOf(1_000)))
+            .map(sec -> securityPosition(sec, qty(1_000)))
             .toArray(SecurityPosition[]::new);
 
         position = new Position()
-            .cash(amount(1_000_000))
+            .cash(Amount.amnt(1_000_000))
             .addSecurityPositions(securityPositions);
 
         LocalDate now = LocalDate.now();
@@ -82,9 +84,9 @@ public class ReportingServiceBenchmark {
             .mapToObj(quantity -> {
                 Transaction t = new Transaction();
                 return t.date(now.minusDays(random.nextInt(dayOfYear)))
-                    .cash(amount(random.nextInt(1_000)))
+                    .cash(Amount.amnt(random.nextInt(1_000)))
                     .type(transactionTypes[random.nextInt(transactionTypes.length)])
-                    .quantity(t.getType().hasQuantity() ? BigDecimal.valueOf(quantity) : BigDecimal.ZERO)
+                    .quantity(t.getType().hasQuantity() ? qty(quantity) : Quantity.zero())
                     .security(t.getType().hasQuantity() ? securities[random.nextInt(securities.length)] : null);
             })
             .collect(Collectors.toList());

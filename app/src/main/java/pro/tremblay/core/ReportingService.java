@@ -87,7 +87,7 @@ public class ReportingService {
     }
 
     private BigDecimal calculateRoi(LocalDate now, Amount initialValue, Amount currentValue) {
-        BigDecimal roi = Amount.substract(currentValue, initialValue)
+        BigDecimal roi = currentValue.substract(initialValue)
                     .toBigDecimal()
                     .divide(initialValue.toBigDecimal(), 10, RoundingMode.HALF_UP)
                     .multiply(BigDecimal.valueOf(100L));
@@ -101,7 +101,7 @@ public class ReportingService {
     private Amount calculatePositionValue(LocalDate beginningOfYear, Position working) {
         Amount initialCashValue = working.getCash();
         Amount initialSecPosValue = working.securityPositionValue(beginningOfYear, priceService);
-        return Amount.add(initialCashValue, initialSecPosValue);
+        return initialCashValue.add(initialSecPosValue);
     }
 
     private void rewindTransactions(LocalDate beginningOfYear, LocalDate today, Position working, List<Transaction> orderedTransaction) {

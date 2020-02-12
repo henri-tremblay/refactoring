@@ -18,11 +18,12 @@ package pro.tremblay.core;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+
+import static pro.tremblay.core.Amount.amnt;
 
 /**
  * Service returning security prices. This is actually a fake implementation using randomly generated prices.
@@ -30,7 +31,7 @@ import java.util.Random;
 @ThreadSafe
 public class PriceService {
 
-    private final Map<String, BigDecimal> prices = new HashMap<>();
+    private final Map<String, Amount> prices = new HashMap<>();
 
     public PriceService(@Nonnull TimeSource timeSource) {
         // Randomly generated price since the beginning of the year
@@ -40,8 +41,8 @@ public class PriceService {
             LocalDate start = now.withDayOfYear(1);
             BigDecimal price = BigDecimal.valueOf(100 + random.nextInt(200));
             while(!start.isAfter(now)) {
-                BigDecimal tick = BigDecimal.valueOf(random.nextGaussian()).setScale(2, RoundingMode.HALF_UP);
-                prices.put(getKey(security, start), price.add(tick));
+                BigDecimal tick = BigDecimal.valueOf(random.nextGaussian());
+                prices.put(getKey(security, start), amnt(price.add(tick)));
                 start = start.plusDays(1);
             }
         }
@@ -61,8 +62,8 @@ public class PriceService {
      * @return the price of the security at a given date
      */
     @Nonnull
-    public BigDecimal getPrice(@Nonnull LocalDate date, @Nonnull Security security) {
-        BigDecimal price = prices.get(getKey(security, date));
+    public Amount getPrice(@Nonnull LocalDate date, @Nonnull Security security) {
+        Amount price = prices.get(getKey(security, date));
         if(price == null) {
             throw new IllegalArgumentException("No price found at " + date + " for " + security);
         }

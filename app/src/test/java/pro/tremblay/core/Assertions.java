@@ -15,25 +15,11 @@
  */
 package pro.tremblay.core;
 
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
-import java.math.BigDecimal;
+import org.assertj.core.api.AbstractBigDecimalAssert;
 
-/**
- * Helper class to make it easier to create a {@code BigDecimal}.
- */
-@ThreadSafe
-public final class BigDecimalUtil {
+public class Assertions extends org.assertj.core.api.Assertions{
 
-    @Nonnull
-    public static BigDecimal bd(@Nonnull String value) {
-        return new BigDecimal(value);
+    public static <T extends Numeric<T>> NumericAssert<T> assertThat(Numeric<T> actual) {
+        return new NumericAssert<T>(actual);
     }
-
-    @Nonnull
-    public static BigDecimal bd(int value) {
-        return BigDecimal.valueOf(value);
-    }
-
-    private BigDecimalUtil() {}
 }

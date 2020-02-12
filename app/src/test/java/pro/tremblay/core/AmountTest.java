@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,53 +15,53 @@
  */
 package pro.tremblay.core;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static pro.tremblay.core.Amount.amount;
+import static pro.tremblay.core.Amount.amnt;
+import static pro.tremblay.core.Assertions.assertThat;
 
 public class AmountTest {
 
-    Amount a1 = amount("1.2");
-    Amount a2 = amount("1.2");
-    Amount a3 = amount("1.3");
+    Amount a1 = amnt("1.2");
+    Amount a2 = amnt("1.2");
+    Amount a3 = amnt("1.3");
 
     @Test
     public void amountInteger() {
-        assertThat(amount(12L).toBigDecimal()).isEqualTo(BigDecimal.valueOf(12));
+        assertThat(Amount.amnt(12L)).isEqualTo("12.00");
     }
 
     @Test
     public void amountBigDecimal() {
-        assertThat(amount(BigDecimal.valueOf(12)).toBigDecimal()).isEqualTo(BigDecimal.valueOf(12));
+        assertThat(Amount.amnt(BigDecimal.valueOf(12))).isEqualTo("12.00");
     }
 
     @Test
     public void isZero() {
-        assertThat(amount("0.00").isZero()).isTrue();
-        assertThat(amount("0.01").isZero()).isFalse();
+        assertThat(amnt("0.00").isZero()).isTrue();
+        assertThat(amnt("0.01").isZero()).isFalse();
     }
 
     @Test
     public void toBigDecimal() {
-        assertThat(a1.toBigDecimal()).isEqualTo(BigDecimal.valueOf(12, 1));
+        assertThat(a1).isEqualTo("1.20");
     }
 
     @Test
     public void add() {
-        assertThat(Amount.add(a1, a3)).isEqualTo(amount("2.5"));
+        assertThat(a1.add(a3)).isEqualTo("2.50");
     }
 
     @Test
     public void substract() {
-        assertThat(Amount.substract(a3, a1)).isEqualTo(amount("0.1"));
+        assertThat(a3.substract(a1)).isEqualTo("0.10");
     }
 
     @Test
     public void negate() {
-        assertThat(a1.negate()).isEqualTo(amount("-1.2"));
+        assertThat(a1.negate()).isEqualTo("-1.20");
     }
 
     @Test
@@ -78,6 +78,6 @@ public class AmountTest {
 
     @Test
     public void testToString() {
-        assertThat(a1.toString()).isEqualTo("1.2");
+        assertThat(a1.toString()).isEqualTo("1.20$");
     }
 }
