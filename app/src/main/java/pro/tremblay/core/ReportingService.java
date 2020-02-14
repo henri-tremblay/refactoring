@@ -17,8 +17,6 @@ package pro.tremblay.core;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Comparator;
@@ -65,7 +63,7 @@ public class ReportingService {
      * @return annualized return on investment since beginning of the year
      */
     @Nonnull
-    public BigDecimal calculateReturnOnInvestmentYTD(@Nonnull Position current, @Nonnull Collection<Transaction> transactions) {
+    public Percentage calculateReturnOnInvestmentYTD(@Nonnull Position current, @Nonnull Collection<Transaction> transactions) {
         LocalDate now = timeSource.today();
         LocalDate beginningOfYear = now.withDayOfYear(1);
 
@@ -78,7 +76,7 @@ public class ReportingService {
         Amount initialValue = calculatePositionValue(beginningOfYear, working);
 
         if(initialValue.isZero()) {
-            return BigDecimal.ZERO.setScale(2, RoundingMode.UNNECESSARY);
+            return Percentage.zero();
         }
 
         Amount currentValue = calculatePositionValue(now, current);
@@ -86,16 +84,12 @@ public class ReportingService {
         return calculateRoi(now, initialValue, currentValue);
     }
 
-    private BigDecimal calculateRoi(LocalDate now, Amount initialValue, Amount currentValue) {
-        BigDecimal roi = currentValue.substract(initialValue)
-                    .toBigDecimal()
-                    .divide(initialValue.toBigDecimal(), 10, RoundingMode.HALF_UP)
-                    .multiply(BigDecimal.valueOf(100L));
+    private Percentage calculateRoi(LocalDate now, Amount initialValue, Amount currentValue) {
+        Percentage roi = currentValue.asRatioOf(initialValue);
 
         int yearLength = preferences.getInteger(LENGTH_OF_YEAR);
 
-        return roi.multiply(BigDecimal.valueOf(yearLength))
-            .divide(BigDecimal.valueOf(now.getDayOfYear()), 2, RoundingMode.HALF_UP);
+        return roi.scale(now.getDayOfYear(), yearLength);
     }
 
     private Amount calculatePositionValue(LocalDate beginningOfYear, Position working) {

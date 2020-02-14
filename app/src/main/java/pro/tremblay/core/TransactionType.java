@@ -15,8 +15,8 @@
  */
 package pro.tremblay.core;
 
-import javax.annotation.concurrent.ThreadSafe;
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.ThreadSafe;
 
 /**
  * Type of transactions.

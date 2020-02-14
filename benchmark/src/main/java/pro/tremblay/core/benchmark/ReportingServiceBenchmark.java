@@ -26,6 +26,7 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
 import pro.tremblay.core.Amount;
+import pro.tremblay.core.Percentage;
 import pro.tremblay.core.Position;
 import pro.tremblay.core.Preferences;
 import pro.tremblay.core.Quantity;
@@ -93,7 +94,7 @@ public class ReportingServiceBenchmark {
     }
 
     @Benchmark
-    public BigDecimal calculate() {
+    public Percentage calculate() {
         return service.calculateReturnOnInvestmentYTD(position, transactions);
     }
 

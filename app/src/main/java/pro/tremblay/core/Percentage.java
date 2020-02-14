@@ -23,6 +23,25 @@ import java.util.Objects;
 @ThreadSafe
 public final class Percentage extends Numeric<Percentage> {
 
+    private static final Percentage HUNDRED = pct("100");
+    private static final Percentage ZERO = pct("0");
+
+    public static Percentage hundred() {
+        return HUNDRED;
+    }
+
+    public static Percentage zero() {
+        return ZERO;
+    }
+
+    public static Percentage pct(long value) {
+        return new Percentage(BigDecimal.valueOf(value));
+    }
+
+    public static Percentage pct(@Nonnull String value) {
+        return new Percentage(new BigDecimal(Objects.requireNonNull(value)));
+    }
+
     public static Percentage pct(@Nonnull BigDecimal value) {
         return new Percentage(Objects.requireNonNull(value));
     }
@@ -34,6 +53,11 @@ public final class Percentage extends Numeric<Percentage> {
     @Override
     protected Percentage fromValue(@Nonnull BigDecimal newValue) {
         return new Percentage(newValue);
+    }
+
+    @Override
+    public int precision() {
+        return 2;
     }
 
     @Override

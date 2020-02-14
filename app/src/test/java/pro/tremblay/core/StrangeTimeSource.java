@@ -15,9 +15,7 @@
  */
 package pro.tremblay.core;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.temporal.TemporalUnit;
 
 public class StrangeTimeSource implements TimeSource {
 

@@ -18,6 +18,7 @@ package pro.tremblay.core;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 
 @ThreadSafe
@@ -25,10 +26,12 @@ public abstract class Numeric<T extends Numeric<T>> {
     protected final BigDecimal value;
 
     protected Numeric(@Nonnull BigDecimal value) {
-        this.value = value;
+        this.value = value.setScale(precision(), RoundingMode.HALF_UP);
     }
 
     protected abstract T fromValue(@Nonnull BigDecimal newValue);
+
+    public abstract int precision();
 
     public T add(@Nonnull T numeric) {
         return fromValue(value.add(numeric.value));
@@ -48,6 +51,19 @@ public abstract class Numeric<T extends Numeric<T>> {
 
     public T negate() {
         return fromValue(value.negate());
+    }
+
+    /**
+     * Scale this numerator to another denominator. E.g. if this is "3" on "4" ("from" param)
+     * and we want to scale to "8" ("to" param), we expect 3 x 8 / 4 = 6 as a result.
+     *
+     * @param from denominator from which to start
+     * @param to denominator to go to
+     * @return the numerator scaling to another denominator
+     */
+    public T scale(int from, int to) {
+        return fromValue(value.multiply(BigDecimal.valueOf(to))
+            .divide(BigDecimal.valueOf(from), 2, RoundingMode.HALF_UP));
     }
 
     @Override

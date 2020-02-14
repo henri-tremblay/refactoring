@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2023 the original author or authors.
+ * Copyright 2019-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,32 +15,37 @@
  */
 package pro.tremblay.core;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import java.math.BigDecimal;
 
-import static pro.tremblay.core.Amount.amnt;
 import static pro.tremblay.core.Assertions.assertThat;
+import static pro.tremblay.core.Percentage.pct;
 
-public class AmountTest {
+public class PercentageTest {
 
     @Test
-    public void amountDouble() {
-        assertThat(amnt(12.1)).isEqualTo("12.10");
+    public void hundred() {
+        assertThat(Percentage.hundred()).isEqualTo("100.00");
     }
 
     @Test
-    public void amountInteger() {
-        assertThat(amnt(12L)).isEqualTo("12.00");
+    public void zero() {
+        assertThat(Percentage.zero()).isEqualTo("0.00");
     }
 
     @Test
-    public void amountBigDecimal() {
-        assertThat(amnt(BigDecimal.valueOf(12))).isEqualTo("12.00");
+    public void percentageInteger() {
+        assertThat(pct(12L)).isEqualTo("12.00");
+    }
+
+    @Test
+    public void percentageBigDecimal() {
+        assertThat(pct(BigDecimal.valueOf(12))).isEqualTo("12.00");
     }
 
     @Test
     public void testToString() {
-        assertThat(amnt("1.2").toString()).isEqualTo("1.20$");
+        assertThat(pct("1.2").toString()).isEqualTo("1.20%");
     }
 }

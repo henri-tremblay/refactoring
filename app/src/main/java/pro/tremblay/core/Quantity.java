@@ -50,4 +50,9 @@ public class Quantity extends Numeric<Quantity> {
     protected Quantity fromValue(@Nonnull BigDecimal newValue) {
         return new Quantity(newValue);
     }
+
+    @Override
+    public int precision() {
+        return 0;
+    }
 }

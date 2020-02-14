@@ -17,7 +17,6 @@ package pro.tremblay.core;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,10 +38,10 @@ public class PriceService {
         LocalDate now = timeSource.today();
         for (Security security : Security.values()) {
             LocalDate start = now.withDayOfYear(1);
-            BigDecimal price = BigDecimal.valueOf(100 + random.nextInt(200));
+            Amount price = amnt(100 + random.nextInt(200));
             while(!start.isAfter(now)) {
-                BigDecimal tick = BigDecimal.valueOf(random.nextGaussian());
-                prices.put(getKey(security, start), amnt(price.add(tick)));
+                Amount tick = amnt(random.nextGaussian());
+                prices.put(getKey(security, start), price.add(tick));
                 start = start.plusDays(1);
             }
         }
