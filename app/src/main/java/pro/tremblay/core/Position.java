@@ -39,6 +39,8 @@ public class Position {
         return new Position();
     }
 
+    private Position() {}
+
     public Position addSecurityPosition(Security security, Quantity quantity) {
         securityPositions.compute(security, (sec, currentQuantity) -> {
             if(currentQuantity == null) {

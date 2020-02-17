@@ -40,6 +40,8 @@ public class Transaction {
         return new Transaction();
     }
 
+    private Transaction() {}
+
     public TransactionType getType() {
         return type;
     }

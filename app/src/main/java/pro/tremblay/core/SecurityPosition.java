@@ -32,7 +32,7 @@ public class SecurityPosition {
         return new SecurityPosition(security, quantity);
     }
 
-    public SecurityPosition(Security security, Quantity quantity) {
+    private SecurityPosition(Security security, Quantity quantity) {
         this.security = security;
         this.quantity = quantity;
     }
