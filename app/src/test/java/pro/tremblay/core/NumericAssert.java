@@ -18,11 +18,21 @@ package pro.tremblay.core;
 import org.assertj.core.api.BigDecimalAssert;
 
 public class NumericAssert<T extends Numeric<T>> extends BigDecimalAssert {
+    private final Numeric<T> actualNumeric;
+
     public NumericAssert(Numeric<T> actual) {
         super(actual.value);
+        actualNumeric = actual;
     }
 
-    public BigDecimalAssert isEqualTo(Numeric<T> expected) {
-        return isEqualTo(expected.toBigDecimal());
+    public NumericAssert<T> isEqualTo(Numeric<T> expected) {
+        objects.assertEqual(info, actualNumeric, expected);
+        return this;
     }
+
+    public NumericAssert<T> isNotEqualTo(Object other) {
+        objects.assertNotEqual(info, actualNumeric, other);
+        return this;
+    }
+
 }

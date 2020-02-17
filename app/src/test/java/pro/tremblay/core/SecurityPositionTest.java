@@ -22,21 +22,39 @@ import static pro.tremblay.core.SecurityPosition.securityPosition;
 
 public class SecurityPositionTest {
 
+    private SecurityPosition securityPosition = securityPosition(Security.GOOGL, Quantity.ten());
+
     @Test
     public void isFlat_notFlat() {
-        SecurityPosition securityPosition = securityPosition(Security.GOOGL, Quantity.ten());
         assertThat(securityPosition.isFlat()).isFalse();
     }
 
     @Test
     public void isFlat_flat() {
-        SecurityPosition securityPosition = securityPosition(Security.GOOGL, Quantity.zero());
+        securityPosition = securityPosition(Security.GOOGL, Quantity.zero());
         assertThat(securityPosition.isFlat()).isTrue();
     }
 
     @Test
     public void testToString() {
-        SecurityPosition securityPosition = securityPosition(Security.GOOGL, Quantity.ten());
         assertThat(securityPosition.toString()).isEqualTo("SecurityPosition{security=GOOGL, quantity=10}");
+    }
+
+    @Test
+    public void testHashCode() {
+        assertThat(securityPosition.hashCode()).isNotEqualTo(0);
+    }
+
+    @Test
+    public void testEquals() {
+        assertThat(securityPosition).isNotEqualTo(null);
+        assertThat(securityPosition).isEqualTo(securityPosition);
+
+        SecurityPosition newSecurityPosition = securityPosition(Security.GOOGL, Quantity.ten());
+        assertThat(securityPosition).isEqualTo(newSecurityPosition);
+        newSecurityPosition = securityPosition(Security.GOOGL, Quantity.zero());
+        assertThat(securityPosition).isNotEqualTo(newSecurityPosition);
+        newSecurityPosition = securityPosition(Security.APPL, Quantity.ten());
+        assertThat(securityPosition).isNotEqualTo(newSecurityPosition);
     }
 }
