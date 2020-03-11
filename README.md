@@ -26,6 +26,8 @@ You can check your test coverage, performance and even the mutation testing resu
 
 To run: `mvn package -DskipTests && java -jar app/target/benchmarks.jar`
 
+If you want to run it against multiple commits, you can do `java RunBenchmarkSuite.java commit1, commit2, ...`.
+
 ## Maintenance
 
 * Upgrade license: `./mvnw validate license:format`
