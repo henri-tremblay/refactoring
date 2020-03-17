@@ -80,4 +80,15 @@ public class Transaction {
         this.quantity = quantity;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+            "type=" + type +
+            ", date=" + date +
+            ", cash=" + cash +
+            ", security=" + security +
+            ", quantity=" + quantity +
+            '}';
+    }
 }

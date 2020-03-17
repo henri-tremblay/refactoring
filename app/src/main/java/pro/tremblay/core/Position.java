@@ -46,4 +46,12 @@ public class Position {
         this.securityPositions = securityPositions;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "Position{" +
+            "cash=" + cash +
+            ", securityPositions=" + securityPositions +
+            '}';
+    }
 }
