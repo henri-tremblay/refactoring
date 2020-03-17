@@ -128,4 +128,28 @@ public class ReportingServiceTest {
             .setScale(2, RoundingMode.HALF_UP);
         assertThat(roi).isEqualTo(actual);
     }
+
+    @Test
+    public void calculateReturnOnInvestmentYTD_twoCashTransactionsOnTheSameDay() {
+        current.cash(bd(200));
+
+        Collection<Transaction> transactions = Arrays.asList(
+            new Transaction()
+                .cash(bd(100))
+                .type(TransactionType.DEPOSIT)
+                .date(LocalDate.now().minusDays(10)),
+            new Transaction()
+                .cash(bd(50))
+                .type(TransactionType.DEPOSIT)
+                .date(LocalDate.now().minusDays(10)));
+
+        BigDecimal roi = reportingService.calculateReturnOnInvestmentYTD(current, transactions);
+
+        // Current cash value = 200$, Current security value = 0$
+        // Initial cash value = 50$, Initial cash value = 0$
+        // Year length = 360
+        BigDecimal actual = BigDecimal.valueOf((200.0 - 50.0) / 50.0 * 100.0 * 360.0 / LocalDate.now().getDayOfYear())
+            .setScale(2, RoundingMode.HALF_UP);
+        assertThat(roi).isEqualTo(actual);
+    }
 }

@@ -75,11 +75,16 @@ public class ReportingService {
                 break;
             }
             Transaction transaction = orderedTransaction.get(transactionIndex);
-            // It's a transaction on the date, process it
-            if (transaction.getDate().equals(today)) {
+            while (transaction.getDate().equals(today)) {
+                // It's a transaction on the date, process it
                 revert(working, transaction);
                 transactionIndex++;
+                if (transactionIndex >= orderedTransaction.size())  {
+                    break;
+                }
+                transaction = orderedTransaction.get(transactionIndex);
             }
+
             today = today.minusDays(1);
         }
 
