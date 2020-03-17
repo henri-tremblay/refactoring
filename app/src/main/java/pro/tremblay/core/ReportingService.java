@@ -78,6 +78,7 @@ public class ReportingService {
             // It's a transaction on the date, process it
             if (transaction.getDate().equals(today)) {
                 revert(working, transaction);
+                transactionIndex++;
             }
             today = today.minusDays(1);
         }
