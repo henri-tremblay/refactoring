@@ -18,7 +18,6 @@ package pro.tremblay.core;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
@@ -107,11 +106,11 @@ public class ReportingServiceTest {
         current.cash(amnt(200));
 
         Collection<Transaction> transactions = Arrays.asList(
-            new Transaction()
+            transaction()
                 .cash(amnt(100))
                 .type(TransactionType.DEPOSIT)
                 .date(hundredDaysAgo),
-            new Transaction()
+            transaction()
                 .cash(amnt(50))
                 .type(TransactionType.DEPOSIT)
                 .date(hundredDaysAgo.minusDays(1)));
@@ -130,11 +129,11 @@ public class ReportingServiceTest {
         current.cash(amnt(200));
 
         Collection<Transaction> transactions = Arrays.asList(
-            new Transaction()
+            transaction()
                 .cash(amnt(100))
                 .type(TransactionType.DEPOSIT)
                 .date(hundredDaysAgo),
-            new Transaction()
+            transaction()
                 .cash(amnt(50))
                 .type(TransactionType.DEPOSIT)
                 .date(hundredDaysAgo));
