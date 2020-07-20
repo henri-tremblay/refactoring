@@ -17,6 +17,7 @@ package pro.tremblay.core;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Comparator;
@@ -32,16 +33,16 @@ public class ReportingService {
     public static final String LENGTH_OF_YEAR = "LENGTH_OF_YEAR";
 
     private final Preferences preferences;
-    private final TimeSource timeSource;
+    private final Clock clock;
     private final PriceService priceService;
 
-    public ReportingService(@Nonnull Preferences preferences, @Nonnull TimeSource timeSource) {
-        this(preferences, timeSource, new PriceService(timeSource));
+    public ReportingService(@Nonnull Preferences preferences, @Nonnull Clock clock) {
+        this(preferences, clock, new PriceService(clock));
     }
 
-    public ReportingService(@Nonnull Preferences preferences, @Nonnull TimeSource timeSource, @Nonnull PriceService priceService) {
+    public ReportingService(@Nonnull Preferences preferences, @Nonnull Clock clock, @Nonnull PriceService priceService) {
         this.preferences = preferences;
-        this.timeSource = timeSource;
+        this.clock = clock;
         this.priceService = priceService;
     }
 
@@ -64,7 +65,7 @@ public class ReportingService {
      */
     @Nonnull
     public Percentage calculateReturnOnInvestmentYTD(@Nonnull Position current, @Nonnull Collection<Transaction> transactions) {
-        LocalDate now = timeSource.today();
+        LocalDate now = LocalDate.now(clock);
         LocalDate beginningOfYear = now.withDayOfYear(1);
 
         Position working = current.copy();

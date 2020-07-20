@@ -33,11 +33,10 @@ import pro.tremblay.core.Quantity;
 import pro.tremblay.core.ReportingService;
 import pro.tremblay.core.Security;
 import pro.tremblay.core.SecurityPosition;
-import pro.tremblay.core.SystemTimeSource;
 import pro.tremblay.core.Transaction;
 import pro.tremblay.core.TransactionType;
 
-import java.math.BigDecimal;
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Random;
@@ -59,7 +58,7 @@ import static pro.tremblay.core.Transaction.transaction;
 public class ReportingServiceBenchmark {
 
     private final Preferences preferences = new Preferences();
-    private final ReportingService service = new ReportingService(preferences, new SystemTimeSource());
+    private final ReportingService service = new ReportingService(preferences, Clock.systemUTC());
 
     private Collection<Transaction> transactions;
     private Position position;

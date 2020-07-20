@@ -18,7 +18,9 @@ package pro.tremblay.core;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Clock;
 import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,22 +37,20 @@ import static pro.tremblay.core.Transaction.transaction;
 public class ReportingServiceTest {
 
     private final Preferences preferences = mock(Preferences.class);
-    private final StrangeTimeSource timeSource = new StrangeTimeSource();
     private final PriceService priceService = mock(PriceService.class);
-
-    private final ReportingService reportingService = new ReportingService(preferences, timeSource, priceService);
 
     private final Position current = position();
 
     private final LocalDate today = LocalDate.ofYearDay(2019, 200);
+    private final Clock clock = Clock.fixed(today.atStartOfDay().toInstant(ZoneOffset.UTC), ZoneOffset.UTC);
     private final LocalDate hundredDaysAgo = today.minusDays(100);
+
+    private final ReportingService reportingService = new ReportingService(preferences, clock, priceService);
 
     @BeforeEach
     public void setup() {
         expect(preferences.getInteger(ReportingService.LENGTH_OF_YEAR)).andStubReturn(360);
         replay(preferences);
-
-        timeSource.today(today);
     }
 
     @Test
@@ -98,7 +98,7 @@ public class ReportingServiceTest {
 
     @Test
     public void testTwoArgsConstructor() {
-        new ReportingService(new Preferences(), new StrangeTimeSource().today(LocalDate.now()));
+        new ReportingService(new Preferences(), Clock.systemDefaultZone());
     }
 
     @Test

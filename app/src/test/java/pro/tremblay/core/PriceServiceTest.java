@@ -17,6 +17,7 @@ package pro.tremblay.core;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.Clock;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,12 +25,12 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 
 public class PriceServiceTest {
 
-    private TimeSource timeSource = new SystemTimeSource();
-    private PriceService priceService = new PriceService(timeSource);
+    private Clock clock = Clock.systemDefaultZone();
+    private PriceService priceService = new PriceService(clock);
 
     @Test
     public void getPrice() {
-        LocalDate now = timeSource.today();
+        LocalDate now = LocalDate.now(clock);
         LocalDate date = now.withDayOfYear(1);
         while(!date.isAfter(now)) {
             assertThat(priceService.getPrice(date, Security.GOOGL)).isNotNull();

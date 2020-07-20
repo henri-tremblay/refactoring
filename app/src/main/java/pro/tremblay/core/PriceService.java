@@ -17,6 +17,7 @@ package pro.tremblay.core;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,10 +33,10 @@ public class PriceService {
 
     private final Map<String, Amount> prices = new HashMap<>();
 
-    public PriceService(@Nonnull TimeSource timeSource) {
+    public PriceService(@Nonnull Clock clock) {
         // Randomly generated price since the beginning of the year
         Random random = new Random();
-        LocalDate now = timeSource.today();
+        LocalDate now = LocalDate.now(clock);
         for (Security security : Security.values()) {
             LocalDate start = now.withDayOfYear(1);
             Amount price = amnt(100 + random.nextInt(200));
