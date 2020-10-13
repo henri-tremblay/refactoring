@@ -41,7 +41,7 @@
                 <!-- JUnit 5 can't be used. Pitest doesn't seem to support it -->
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.13</version>
+                <version>4.13.1</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
