@@ -93,9 +93,9 @@ public class ReportingService {
         return roi.scale(now.getDayOfYear(), yearLength);
     }
 
-    private Amount calculatePositionValue(LocalDate beginningOfYear, Position working) {
-        Amount initialCashValue = working.getCash();
-        Amount initialSecPosValue = working.securityPositionValue(beginningOfYear, priceService);
+    private Amount calculatePositionValue(LocalDate beginningOfYear, Position position) {
+        Amount initialCashValue = position.getCash();
+        Amount initialSecPosValue = position.securityPositionValue(beginningOfYear, priceService);
         return initialCashValue.add(initialSecPosValue);
     }
 
