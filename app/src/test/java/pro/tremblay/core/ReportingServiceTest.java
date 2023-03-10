@@ -15,9 +15,10 @@
  */
 package pro.tremblay.core;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -30,6 +31,7 @@ import java.util.Collections;
 import static org.assertj.core.api.Assertions.*;
 import static pro.tremblay.core.BigDecimalUtil.bd;
 
+@SetSystemProperty(key="LENGTH_OF_YEAR", value="360")
 public class ReportingServiceTest {
 
     private ReportingService reportingService = new ReportingService();
@@ -37,16 +39,6 @@ public class ReportingServiceTest {
     private final Position current = new Position()
             .cash(BigDecimal.ZERO)
             .securityPositions(new ArrayList<>());
-
-    @Before
-    public void setup() {
-        System.setProperty("LENGTH_OF_YEAR", "360");
-    }
-
-    @After
-    public void after() {
-        System.clearProperty("LENGTH_OF_YEAR");
-    }
 
     @Test
     public void calculateReturnOnInvestmentYTD_noTransactionAndPosition() {

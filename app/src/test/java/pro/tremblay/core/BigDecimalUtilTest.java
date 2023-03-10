@@ -15,16 +15,14 @@
  */
 package pro.tremblay.core;
 
-import org.junit.Test;
-
-import java.math.BigDecimal;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
 import static pro.tremblay.core.BigDecimalUtil.bd;
 
 public class BigDecimalUtilTest {
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void bdInt() {
         assertThat(bd(4)).isEqualTo("4");
     }

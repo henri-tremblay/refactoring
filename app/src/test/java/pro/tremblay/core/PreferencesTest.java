@@ -15,7 +15,7 @@
  */
 package pro.tremblay.core;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
 
