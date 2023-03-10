@@ -37,7 +37,7 @@ public abstract sealed class Numeric<T extends Numeric<T>> permits Amount, Perce
         return fromValue(value.add(numeric.value));
     }
 
-    public T substract(@Nonnull T numeric) {
+    public T subtract(@Nonnull T numeric) {
         return fromValue(value.subtract(numeric.value));
     }
 

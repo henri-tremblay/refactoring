@@ -43,8 +43,8 @@ public class NumericTest {
     }
 
     @Test
-    public void substract() {
-        assertThat(a3.substract(a1)).isEqualTo("0.10");
+    public void subtract() {
+        assertThat(a3.subtract(a1)).isEqualTo("0.10");
     }
 
     @Test
