@@ -59,7 +59,7 @@ public class Position {
         this.cash = this.cash.add(cash);
     }
 
-    public Amount getCash() {
+    public Amount cash() {
         return cash;
     }
 
@@ -80,7 +80,7 @@ public class Position {
 
     public Position copy() {
         Position position = position()
-                .cash(getCash());
+                .cash(cash());
         position.securityPositions.putAll(securityPositions);
         return position;
     }

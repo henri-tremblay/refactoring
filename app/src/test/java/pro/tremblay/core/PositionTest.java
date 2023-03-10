@@ -39,7 +39,7 @@ public class PositionTest {
     public void copy() {
         Position actual = position.copy();
         assertThat(actual).isNotSameAs(position);
-        assertThat(actual.getCash()).isEqualTo(position.getCash());
+        assertThat(actual.cash()).isEqualTo(position.cash());
         assertThat(actual.getSecurityPositions())
             .usingRecursiveFieldByFieldElementComparator()
             .containsExactlyInAnyOrderElementsOf(position.getSecurityPositions());
@@ -48,7 +48,7 @@ public class PositionTest {
     @Test
     public void addCash() {
         position.addCash(amnt(200));
-        assertThat(position.getCash()).isEqualTo("210.00");
+        assertThat(position.cash()).isEqualTo("210.00");
     }
 
     @Test

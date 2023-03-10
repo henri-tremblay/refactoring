@@ -46,7 +46,7 @@ public class TransactionRevertTest {
 
         transaction.revert(position);
 
-        assertThat(position.getCash()).isEqualTo("150.00");
+        assertThat(position.cash()).isEqualTo("150.00");
         assertThat(position.getSecurityPositions())
             .usingRecursiveFieldByFieldElementComparator()
             .containsOnly(securityPosition(Security.GOOGL, qty(-20)));
@@ -54,7 +54,7 @@ public class TransactionRevertTest {
         // Do it again now that the position exists
         transaction.revert(position);
 
-        assertThat(position.getCash()).isEqualTo("200.00");
+        assertThat(position.cash()).isEqualTo("200.00");
         assertThat(position.getSecurityPositions())
             .usingRecursiveFieldByFieldElementComparator()
             .containsOnly(securityPosition(Security.GOOGL, qty(-40)));
@@ -70,7 +70,7 @@ public class TransactionRevertTest {
 
         transaction.revert(position);
 
-        assertThat(position.getCash()).isEqualTo("70.00");
+        assertThat(position.cash()).isEqualTo("70.00");
         assertThat(position.getSecurityPositions())
             .usingRecursiveFieldByFieldElementComparator()
             .containsOnly(securityPosition(Security.GOOGL, qty(20)));
@@ -78,7 +78,7 @@ public class TransactionRevertTest {
         // Do it again now that the position exists
         transaction.revert(position);
 
-        assertThat(position.getCash()).isEqualTo("40.00");
+        assertThat(position.cash()).isEqualTo("40.00");
         assertThat(position.getSecurityPositions())
             .usingRecursiveFieldByFieldElementComparator()
             .containsOnly(securityPosition(Security.GOOGL, qty(40)));
@@ -93,7 +93,7 @@ public class TransactionRevertTest {
 
         transaction.revert(position);
 
-        assertThat(position.getCash()).isEqualTo("70.00");
+        assertThat(position.cash()).isEqualTo("70.00");
         assertThat(position.getSecurityPositions()).isEmpty();
     }
 
@@ -105,7 +105,7 @@ public class TransactionRevertTest {
 
         transaction.revert(position);
 
-        assertThat(position.getCash()).isEqualTo("130.00");
+        assertThat(position.cash()).isEqualTo("130.00");
         assertThat(position.getSecurityPositions()).isEmpty();
     }
 }

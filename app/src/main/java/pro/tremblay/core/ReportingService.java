@@ -93,7 +93,7 @@ public class ReportingService {
     }
 
     private Amount calculatePositionValue(LocalDate beginningOfYear, Position position) {
-        Amount initialCashValue = position.getCash();
+        Amount initialCashValue = position.cash();
         Amount initialSecPosValue = position.securityPositionValue(beginningOfYear, priceService);
         return initialCashValue.add(initialSecPosValue);
     }
