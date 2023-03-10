@@ -31,5 +31,5 @@ If you want to run it against multiple commits, you can do `java RunBenchmarkSui
 ## Maintenance
 
 * Upgrade license: `./mvnw validate license:format`
-* Upgrade the Maven wrapper: `./mvnw -N io.takari:maven:0.7.7:wrapper`
+* Upgrade the Maven wrapper: `mvn -N wrapper:wrapper`
 * Check plugins to upgrade: `./mvnw versions:display-dependency-updates versions:display-plugin-updates`
