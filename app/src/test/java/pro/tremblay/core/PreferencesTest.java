@@ -26,7 +26,7 @@ public class PreferencesTest {
     private final Preferences preferences = new Preferences();
 
     @Test
-    public void getString_unknowPreference() {
+    public void getString_unknownPreference() {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> preferences.getString("aaa"))
             .withMessage("aaa is not a known preference");

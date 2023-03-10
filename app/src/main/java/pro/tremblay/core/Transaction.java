@@ -27,7 +27,7 @@ public class Transaction {
 
     /** Type of transaction **/
     private TransactionType type;
-    /** Date at which the transaction occured */
+    /** Date at which the transaction occurred */
     private LocalDate date;
     /** Amount of cash exchanged during the transaction. The amount is always positive, the side of the transaction is determined by its type */
     private Amount cash;
