@@ -21,7 +21,7 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
+import java.util.random.RandomGenerator;
 
 import static pro.tremblay.core.Amount.amnt;
 
@@ -35,11 +35,11 @@ public class PriceService {
 
     public PriceService(@Nonnull Clock clock) {
         // Randomly generated price since the beginning of the year
-        Random random = new Random();
+        RandomGenerator random = RandomGenerator.getDefault();
         LocalDate now = LocalDate.now(clock);
         for (Security security : Security.values()) {
             LocalDate start = now.withDayOfYear(1);
-            Amount price = amnt(100 + random.nextInt(200));
+            Amount price = amnt(random.nextInt(100, 300));
             while(!start.isAfter(now)) {
                 Amount tick = amnt(random.nextGaussian());
                 prices.put(getKey(security, start), price.add(tick));

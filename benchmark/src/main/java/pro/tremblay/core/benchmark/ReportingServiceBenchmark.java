@@ -39,8 +39,8 @@ import pro.tremblay.core.TransactionType;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import java.util.random.RandomGenerator;
 import java.util.stream.Stream;
 
 import static pro.tremblay.core.Position.position;
@@ -80,7 +80,7 @@ public class ReportingServiceBenchmark {
 
         TransactionType[] transactionTypes = TransactionType.values();
 
-        Random random = new Random();
+        RandomGenerator random = RandomGenerator.getDefault();
         transactions = random.ints(100, 1, 100)
             .mapToObj(quantity -> {
                 Transaction t = transaction();
