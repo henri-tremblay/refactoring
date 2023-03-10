@@ -72,7 +72,7 @@ public class Position {
         for (SecurityPosition sp : securityPositions) {
             // No need to add flat positions
             if (!sp.isFlat()) {
-                this.securityPositions.put(sp.getSecurity(), sp.getQuantity());
+                this.securityPositions.put(sp.security(), sp.quantity());
             }
         }
         return this;

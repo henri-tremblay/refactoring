@@ -105,7 +105,7 @@ public class ReportingService {
                 break;
             }
             Transaction transaction = orderedTransaction.get(transactionIndex);
-            while (transaction.getDate().equals(today)) {
+            while (transaction.date().equals(today)) {
                 // It's a transaction on the date, process it
                 transaction.revert(working);
                 transactionIndex++;
@@ -121,7 +121,7 @@ public class ReportingService {
 
     private List<Transaction> antichronologicalOrderedTransactions(@Nonnull Collection<Transaction> transactions) {
         return transactions.stream()
-                .sorted(Comparator.comparing(Transaction::getDate).reversed())
+                .sorted(Comparator.comparing((Transaction t) -> t.date()).reversed())
                 .toList();
     }
 

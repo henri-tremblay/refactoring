@@ -42,7 +42,7 @@ public class Transaction {
 
     private Transaction() {}
 
-    public TransactionType getType() {
+    public TransactionType type() {
         return type;
     }
 
@@ -51,7 +51,7 @@ public class Transaction {
         return this;
     }
 
-    public LocalDate getDate() {
+    public LocalDate date() {
         return date;
     }
 
@@ -60,7 +60,7 @@ public class Transaction {
         return this;
     }
 
-    public Amount getCash() {
+    public Amount cash() {
         return cash;
     }
 
@@ -69,7 +69,7 @@ public class Transaction {
         return this;
     }
 
-    public Security getSecurity() {
+    public Security security() {
         return security;
     }
 
@@ -78,7 +78,7 @@ public class Transaction {
         return this;
     }
 
-    public Quantity getQuantity() {
+    public Quantity quantity() {
         return quantity;
     }
 
@@ -88,7 +88,7 @@ public class Transaction {
     }
 
     public void revert(@Nonnull Position position) {
-        getType().revert(position, this);
+        type().revert(position, this);
     }
 
     @Override

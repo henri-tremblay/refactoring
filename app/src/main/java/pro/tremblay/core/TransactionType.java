@@ -53,15 +53,15 @@ public enum TransactionType {
     public void revert(@Nonnull Position position, @Nonnull Transaction transaction) {
         switch (this) {
             case BUY -> {
-                position.addCash(transaction.getCash());
-                position.addSecurityPosition(transaction.getSecurity(), transaction.getQuantity().negate());
+                position.addCash(transaction.cash());
+                position.addSecurityPosition(transaction.security(), transaction.quantity().negate());
             }
             case SELL -> {
-                position.addCash(transaction.getCash().negate());
-                position.addSecurityPosition(transaction.getSecurity(), transaction.getQuantity());
+                position.addCash(transaction.cash().negate());
+                position.addSecurityPosition(transaction.security(), transaction.quantity());
             }
-            case DEPOSIT -> position.addCash(transaction.getCash().negate());
-            case WITHDRAWAL -> position.addCash(transaction.getCash());
+            case DEPOSIT -> position.addCash(transaction.cash().negate());
+            case WITHDRAWAL -> position.addCash(transaction.cash());
         }
     }
 

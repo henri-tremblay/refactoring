@@ -88,8 +88,8 @@ public class ReportingServiceBenchmark {
                     .date(now.minusDays(random.nextInt(dayOfYear)))
                     .cash(Amount.amnt(random.nextInt(1_000)))
                     .type(transactionTypes[random.nextInt(transactionTypes.length)])
-                    .quantity(t.getType().hasQuantity() ? qty(quantity) : Quantity.zero())
-                    .security(t.getType().hasQuantity() ? securities[random.nextInt(securities.length)] : null);
+                    .quantity(t.type().hasQuantity() ? qty(quantity) : Quantity.zero())
+                    .security(t.type().hasQuantity() ? securities[random.nextInt(securities.length)] : null);
             })
             .toList();
     }

@@ -38,12 +38,12 @@ public class SecurityPosition {
     }
 
     @Nonnull
-    public Security getSecurity() {
+    public Security security() {
         return security;
     }
 
     @Nonnull
-    public Quantity getQuantity() {
+    public Quantity quantity() {
         return quantity;
     }
 
