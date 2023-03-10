@@ -17,9 +17,6 @@ package pro.tremblay.core;
 
 import org.junit.jupiter.api.Test;
 
-import javax.annotation.Nonnull;
-import java.math.BigDecimal;
-
 import static pro.tremblay.core.Amount.amnt;
 import static pro.tremblay.core.Assertions.assertThat;
 
