@@ -41,7 +41,7 @@ public class PositionTest {
         assertThat(actual).isNotSameAs(position);
         assertThat(actual.getCash()).isEqualTo(position.getCash());
         assertThat(actual.getSecurityPositions())
-            .usingFieldByFieldElementComparator()
+            .usingRecursiveFieldByFieldElementComparator()
             .containsExactlyInAnyOrderElementsOf(position.getSecurityPositions());
     }
 

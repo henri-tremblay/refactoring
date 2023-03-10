@@ -48,7 +48,7 @@ public class TransactionRevertTest {
 
         assertThat(position.getCash()).isEqualTo("150.00");
         assertThat(position.getSecurityPositions())
-            .usingFieldByFieldElementComparator()
+            .usingRecursiveFieldByFieldElementComparator()
             .containsOnly(securityPosition(Security.GOOGL, qty(-20)));
 
         // Do it again now that the position exists
@@ -56,7 +56,7 @@ public class TransactionRevertTest {
 
         assertThat(position.getCash()).isEqualTo("200.00");
         assertThat(position.getSecurityPositions())
-            .usingFieldByFieldElementComparator()
+            .usingRecursiveFieldByFieldElementComparator()
             .containsOnly(securityPosition(Security.GOOGL, qty(-40)));
     }
 
@@ -72,7 +72,7 @@ public class TransactionRevertTest {
 
         assertThat(position.getCash()).isEqualTo("70.00");
         assertThat(position.getSecurityPositions())
-            .usingFieldByFieldElementComparator()
+            .usingRecursiveFieldByFieldElementComparator()
             .containsOnly(securityPosition(Security.GOOGL, qty(20)));
 
         // Do it again now that the position exists
@@ -80,7 +80,7 @@ public class TransactionRevertTest {
 
         assertThat(position.getCash()).isEqualTo("40.00");
         assertThat(position.getSecurityPositions())
-            .usingFieldByFieldElementComparator()
+            .usingRecursiveFieldByFieldElementComparator()
             .containsOnly(securityPosition(Security.GOOGL, qty(40)));
 
     }
