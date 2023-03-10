@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static pro.tremblay.core.SecurityPosition.securityPosition;
 
@@ -87,7 +86,7 @@ public class Position {
     }
 
     private List<Map.Entry<Security, Quantity>> sortedSecurityPositions() {
-        return securityPositions.entrySet().stream().sorted(Map.Entry.comparingByKey()).collect(Collectors.toList());
+        return securityPositions.entrySet().stream().sorted(Map.Entry.comparingByKey()).toList();
     }
 
     public Amount securityPositionValue(LocalDate date, PriceService priceService) {
@@ -103,7 +102,7 @@ public class Position {
             .entrySet()
             .stream()
             .map(entry -> securityPosition(entry.getKey(), entry.getValue()))
-            .collect(Collectors.toList());
+            .toList();
     }
 
     @Override

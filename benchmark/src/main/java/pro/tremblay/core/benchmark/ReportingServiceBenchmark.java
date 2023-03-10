@@ -41,7 +41,6 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static pro.tremblay.core.Position.position;
@@ -92,7 +91,7 @@ public class ReportingServiceBenchmark {
                     .quantity(t.getType().hasQuantity() ? qty(quantity) : Quantity.zero())
                     .security(t.getType().hasQuantity() ? securities[random.nextInt(securities.length)] : null);
             })
-            .collect(Collectors.toList());
+            .toList();
     }
 
     @Benchmark
