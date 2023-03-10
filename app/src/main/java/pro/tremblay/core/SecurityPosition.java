@@ -15,64 +15,20 @@
  */
 package pro.tremblay.core;
 
-import javax.annotation.Nonnull;
 import javax.annotation.concurrent.NotThreadSafe;
-import java.util.Objects;
 
 /**
  * Quantity possessed of a given security.
  */
 @NotThreadSafe
-public class SecurityPosition {
-
-    private final Security security;
-    private final Quantity quantity;
+public record SecurityPosition(Security security, Quantity quantity) {
 
     public static SecurityPosition securityPosition(Security security, Quantity quantity) {
         return new SecurityPosition(security, quantity);
     }
 
-    private SecurityPosition(Security security, Quantity quantity) {
-        this.security = security;
-        this.quantity = quantity;
-    }
-
-    @Nonnull
-    public Security security() {
-        return security;
-    }
-
-    @Nonnull
-    public Quantity quantity() {
-        return quantity;
-    }
-
-    @Override
-    public String toString() {
-        return "SecurityPosition{" +
-            "security=" + security +
-            ", quantity=" + quantity +
-            '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        SecurityPosition that = (SecurityPosition) o;
-        return security == that.security && quantity.equals(that.quantity);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(security, quantity);
-    }
-
     public boolean isFlat() {
         return quantity.isZero();
     }
+
 }

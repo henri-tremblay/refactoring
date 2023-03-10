@@ -37,7 +37,7 @@ public class SecurityPositionTest {
 
     @Test
     public void testToString() {
-        assertThat(securityPosition.toString()).isEqualTo("SecurityPosition{security=GOOGL, quantity=10}");
+        assertThat(securityPosition.toString()).isEqualTo("SecurityPosition[security=GOOGL, quantity=10]");
     }
 
     @Test
