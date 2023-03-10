@@ -51,7 +51,7 @@
         <!--
             JMH version to use with this project.
           -->
-        <jmh.version>1.29</jmh.version>
+        <jmh.version>1.36</jmh.version>
 
         <!--
             Name of the benchmark Uber-JAR to generate.
@@ -64,7 +64,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
