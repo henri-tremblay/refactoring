@@ -22,7 +22,7 @@ import static pro.tremblay.core.BigDecimalUtil.bd;
 
 public class BigDecimalUtilTest {
 
-    @org.junit.jupiter.api.Test
+    @Test
     public void bdInt() {
         assertThat(bd(4)).isEqualTo("4");
     }
