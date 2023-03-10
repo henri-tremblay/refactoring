@@ -25,9 +25,9 @@ import static pro.tremblay.core.Assertions.assertThat;
 
 public class NumericTest {
 
-    Amount a1 = amnt("1.2");
-    Amount a2 = amnt("1.2");
-    Amount a3 = amnt("1.3");
+    private final Amount a1 = amnt("1.2");
+    private final Amount a2 = amnt("1.2");
+    private final Amount a3 = amnt("1.3");
 
     @Test
     public void isZero() {

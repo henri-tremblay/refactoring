@@ -25,8 +25,8 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 
 public class PriceServiceTest {
 
-    private Clock clock = Clock.systemDefaultZone();
-    private PriceService priceService = new PriceService(clock);
+    private final Clock clock = Clock.systemDefaultZone();
+    private final PriceService priceService = new PriceService(clock);
 
     @Test
     public void getPrice() {

@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 
 public class PreferencesTest {
 
-    private Preferences preferences = new Preferences();
+    private final Preferences preferences = new Preferences();
 
     @Test
     public void getString_unknowPreference() {
