@@ -24,63 +24,25 @@ import javax.annotation.concurrent.ThreadSafe;
 @ThreadSafe
 public enum TransactionType {
     /** Securities were bought using cash */
-    BUY {
-        @Override
-        public boolean hasQuantity() {
-            return true;
-        }
-
-        @Override
-        public void revert(@Nonnull Position position, @Nonnull Transaction transaction) {
-            position.addCash(transaction.getCash());
-            position.addSecurityPosition(transaction.getSecurity(), transaction.getQuantity().negate());
-        }
-    },
+    BUY,
     /** Securities were sold to get cash */
-    SELL {
-        @Override
-        public boolean hasQuantity() {
-            return true;
-        }
-
-        @Override
-        public void revert(@Nonnull Position position, @Nonnull Transaction transaction) {
-            position.addCash(transaction.getCash().negate());
-            position.addSecurityPosition(transaction.getSecurity(), transaction.getQuantity());
-        }
-    },
+    SELL,
     /** Cash was added to the position */
-    DEPOSIT {
-        @Override
-        public boolean hasQuantity() {
-            return false;
-        }
-
-        @Override
-        public void revert(@Nonnull Position position, @Nonnull Transaction transaction) {
-            position.addCash(transaction.getCash().negate());
-        }
-
-    },
+    DEPOSIT,
     /** Cash was removed from the position */
-    WITHDRAWAL {
-        @Override
-        public boolean hasQuantity() {
-            return false;
-        }
-
-        @Override
-        public void revert(@Nonnull Position position, @Nonnull Transaction transaction) {
-            position.addCash(transaction.getCash());
-        }
-    };
+    WITHDRAWAL;
 
     /**
      * Tells if this type of transactions involve a security movement.
      *
      * @return if some security quantity was exchanged
      */
-    public abstract boolean hasQuantity();
+    public boolean hasQuantity() {
+        return switch (this) {
+            case BUY, SELL -> true;
+            case DEPOSIT, WITHDRAWAL -> false;
+        };
+    }
 
     /**
      * Revert a transaction from a position.
@@ -88,6 +50,19 @@ public enum TransactionType {
      * @param position the position on which the transaction will be reverted
      * @param transaction the transaction to revert
      */
-    public abstract void revert(@Nonnull Position position, @Nonnull Transaction transaction);
+    public void revert(@Nonnull Position position, @Nonnull Transaction transaction) {
+        switch (this) {
+            case BUY -> {
+                position.addCash(transaction.getCash());
+                position.addSecurityPosition(transaction.getSecurity(), transaction.getQuantity().negate());
+            }
+            case SELL -> {
+                position.addCash(transaction.getCash().negate());
+                position.addSecurityPosition(transaction.getSecurity(), transaction.getQuantity());
+            }
+            case DEPOSIT -> position.addCash(transaction.getCash().negate());
+            case WITHDRAWAL -> position.addCash(transaction.getCash());
+        };
+    }
 
 }
