@@ -2,3 +2,4 @@
 target/
 *.iml
 /RunBenchmarkSuite.class
+/benchmark/dependency-reduced-pom.xml
