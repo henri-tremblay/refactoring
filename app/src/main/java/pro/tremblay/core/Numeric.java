@@ -22,7 +22,7 @@ import java.math.RoundingMode;
 import java.util.Objects;
 
 @ThreadSafe
-public abstract class Numeric<T extends Numeric<T>> {
+public abstract sealed class Numeric<T extends Numeric<T>> permits Amount, Percentage, Quantity {
     protected final BigDecimal value;
 
     protected Numeric(@Nonnull BigDecimal value) {

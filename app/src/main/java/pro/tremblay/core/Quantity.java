@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 @ThreadSafe
-public class Quantity extends Numeric<Quantity> {
+public final class Quantity extends Numeric<Quantity> {
 
     private static final Quantity ZERO = new Quantity(BigDecimal.ZERO);
     private static final Quantity TEN = qty(10);

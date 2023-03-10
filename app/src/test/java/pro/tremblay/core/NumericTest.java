@@ -20,63 +20,44 @@ import org.junit.jupiter.api.Test;
 import javax.annotation.Nonnull;
 import java.math.BigDecimal;
 
+import static pro.tremblay.core.Amount.amnt;
 import static pro.tremblay.core.Assertions.assertThat;
 
 public class NumericTest {
 
-    private static class ANumeric extends Numeric<ANumeric> {
-        protected ANumeric(@Nonnull BigDecimal value) {
-            super(value);
-        }
-
-        @Override
-        protected ANumeric fromValue(@Nonnull BigDecimal newValue) {
-            return new ANumeric(newValue);
-        }
-
-        @Override
-        public int precision() {
-            return 1;
-        }
-    }
-
-    ANumeric a1 = n("1.2");
-    ANumeric a2 = n("1.2");
-    ANumeric a3 = n("1.3");
-
-    private ANumeric n(String s) {
-        return new ANumeric(new BigDecimal(s));
-    }
+    Amount a1 = amnt("1.2");
+    Amount a2 = amnt("1.2");
+    Amount a3 = amnt("1.3");
 
     @Test
     public void isZero() {
-        assertThat(n("0.0").isZero()).isTrue();
-        assertThat(n("0.1").isZero()).isFalse();
+        assertThat(amnt("0.0").isZero()).isTrue();
+        assertThat(amnt("0.1").isZero()).isFalse();
     }
 
     @Test
     public void toBigDecimal() {
-        assertThat(a1).isEqualTo("1.2");
+        assertThat(a1).isEqualTo("1.20");
     }
 
     @Test
     public void add() {
-        assertThat(a1.add(a3)).isEqualTo("2.5");
+        assertThat(a1.add(a3)).isEqualTo("2.50");
     }
 
     @Test
     public void substract() {
-        assertThat(a3.substract(a1)).isEqualTo("0.1");
+        assertThat(a3.substract(a1)).isEqualTo("0.10");
     }
 
     @Test
     public void negate() {
-        assertThat(a1.negate()).isEqualTo("-1.2");
+        assertThat(a1.negate()).isEqualTo("-1.20");
     }
 
     @Test
     public void scale() {
-        assertThat(a1.scale(100, 200)).isEqualTo("2.4");
+        assertThat(a1.scale(100, 200)).isEqualTo("2.40");
     }
     @Test
     public void testEquals() {
