@@ -62,7 +62,7 @@ public enum TransactionType {
             }
             case DEPOSIT -> position.addCash(transaction.getCash().negate());
             case WITHDRAWAL -> position.addCash(transaction.getCash());
-        };
+        }
     }
 
 }
